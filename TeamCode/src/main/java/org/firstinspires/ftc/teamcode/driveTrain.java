@@ -23,10 +23,10 @@ public class driveTrain {
         None
     }
     public driveTrain(HardwareMap hardwareMap, Reverse reversal, IMU.Parameters params, ScalarInterface scalar){
-        FrontRight  =   hardwareMap.get(DcMotorEx.class, "FRName");
-        FrontLeft   =   hardwareMap.get(DcMotorEx.class, "FLName");
-        BackRight   =   hardwareMap.get(DcMotorEx.class, "BRName");
-        BackLeft    =   hardwareMap.get(DcMotorEx.class, "BLName");
+        FrontRight  =   hardwareMap.get(DcMotorEx.class, "Forward_Right");
+        FrontLeft   =   hardwareMap.get(DcMotorEx.class, "Forward_Left");
+        BackRight   =   hardwareMap.get(DcMotorEx.class, "Backward_Right");
+        BackLeft    =   hardwareMap.get(DcMotorEx.class, "Backward_Left");
 
         if(reversal == Reverse.RevLeft){
             FrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -62,7 +62,7 @@ public class driveTrain {
     public driveTrain(HardwareMap hardwareMap){
         this(hardwareMap, Reverse.RevLeft);
     }
-    void drive(double forward, double strafe, double turn, boolean resetIMU) {
+    void update(double forward, double strafe, double turn, boolean resetIMU) {
 
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
@@ -79,7 +79,8 @@ public class driveTrain {
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio,
         // but only if at least one is out of the range [-1, 1]
-        double denominator = Math.max(Math.abs(scaleFn.scale(rotY)) + Math.abs(scaleFn.scale(rotX)) + Math.abs(scaleFn.scale(turn)), 1);
+        //double denominator = Math.max(Math.abs(scaleFn.scale(rotY)) + Math.abs(scaleFn.scale(rotX)) + Math.abs(scaleFn.scale(turn)), 1);
+        double denominator = 1;
         double frontLeftPower   =   scaleFn.scale(rotY + rotX + turn) / denominator;
         double backLeftPower    =   scaleFn.scale(rotY - rotX + turn) / denominator;
         double frontRightPower  =   scaleFn.scale(rotY - rotX - turn) / denominator;

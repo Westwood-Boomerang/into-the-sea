@@ -61,15 +61,16 @@ public class PIDFcontroller {
       * @param Target The target position
       *
       */
-    public void CalculateAsnyc(int Target,int position){
+    public double CalculateAsnyc(int Target,int position){
         Reference = Target;
         this.position = position;
         Error = Reference - position;
-        if (Math.abs(Error)< tolerance){
-            CalculateFunc(Target,this.position);
+        if (Math.abs(Error) > tolerance){
+            return CalculateFunc(Target,this.position);
         }
+        return 0;
     }
-    private int CalculateFunc(int Target, int currentPos){
+    private double CalculateFunc(int Target, int currentPos){
 
         Reference = Target;
         position = currentPos;
@@ -96,6 +97,7 @@ public class PIDFcontroller {
         double output = (Kp * Error) + (Ki * Integral) + (Kd * Derivative) + (Kf * Reference);
         LastError = Error;
         time.reset();
+        return output;
     }
 
     public void reset(){
