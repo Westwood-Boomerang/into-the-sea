@@ -96,8 +96,6 @@ public class BoomerangTeleopRough extends OpMode{
 
         int lift = slides.getCurrentPosition();
 
-        arm.setDirection(DcMotorEx.Direction.FORWARD);
-
         //programs A button for claw
         if (gamepad1.a){
             if (!claw_up) {
