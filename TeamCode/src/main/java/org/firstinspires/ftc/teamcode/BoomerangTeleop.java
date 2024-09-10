@@ -34,12 +34,14 @@ public class BoomerangTeleop extends LinearOpMode {
         boolean claw_up = false;
         boolean arm_up = false;
         int sample = 0;
+
+        arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        slides.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
         waitForStart();
 
 
-        arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-        slides.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
 
         if (opModeIsActive()) {
