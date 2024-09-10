@@ -21,28 +21,31 @@ public class BoomerangTeleop extends LinearOpMode {
 
         ),(x) -> {return x;});
 
+        DcMotorEx arm;
+        DcMotorEx slides;
+        Servo claw;
+        Servo wrist;
+
+        arm = hardwareMap.get(DcMotorEx.class, "Arm");
+        slides = hardwareMap.get(DcMotorEx.class, "Slides");
+        claw = hardwareMap.get(Servo.class, "Claw");
+        wrist = hardwareMap.get(Servo.class, "Wrist");
+
+        boolean claw_up = false;
+        boolean arm_up = false;
+        int sample = 0;
         waitForStart();
+
+
+        arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        slides.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+
         if (opModeIsActive()) {
             while (opModeIsActive()) {
                 DriveTrain.update(-gamepad1.left_stick_y,gamepad1.left_stick_x,gamepad1.right_stick_x, gamepad1.start);
                 // code goes here!,
-                DcMotorEx arm;
-                DcMotorEx slides;
-                Servo claw;
-                Servo wrist;
-
-                arm = hardwareMap.get(DcMotorEx.class, "Arm");
-                slides = hardwareMap.get(DcMotorEx.class, "Slides");
-                claw = hardwareMap.get(Servo.class, "Claw");
-                wrist = hardwareMap.get(Servo.class, "Wrist");
-
-                arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-
-                slides.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-
-                boolean claw_up = false;
-                boolean arm_up = false;
-                int sample = 0;
 
                 int lift = slides.getCurrentPosition();
 
