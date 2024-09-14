@@ -12,7 +12,8 @@ public class BoomerangTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
         //init drivetrain
-        driveTrain DriveTrain = new driveTrain(hardwareMap, driveTrain.Reverse.RevLeft, , new IMU.Parameters(
+
+        driveTrain DriveTrain = new driveTrain(hardwareMap, driveTrain.Reverse.RevLeft,  new IMU.Parameters(
                 new RevHubOrientationOnRobot(
                         RevHubOrientationOnRobot.LogoFacingDirection.UP,
                         RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)
