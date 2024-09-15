@@ -45,10 +45,10 @@ public class BoomerangTeleopRough extends OpMode{
     @Override
     public void init(){
         //maps motors to driver hub
-        frontLeft = hardwareMap.get(DcMotorEx.class, "FL");
-        frontRight = hardwareMap.get(DcMotorEx.class, "FR");
-        backLeft = hardwareMap.get(DcMotorEx.class, "BL");
-        backRight = hardwareMap.get(DcMotorEx.class, "BR");
+        frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
+        backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
+        backRight = hardwareMap.get(DcMotorEx.class, "backRight");
 
         arm = hardwareMap.get(DcMotorEx.class, "Arm");
         slides = hardwareMap.get(DcMotorEx.class, "Slides");
@@ -84,7 +84,7 @@ public class BoomerangTeleopRough extends OpMode{
     }
     public void loop(){
         //calibrates the parts of the robot with the controller.
-        double drive = gamepad1.left_stick_y;
+        double drive = -gamepad1.left_stick_y;
         double strafe = gamepad1.left_stick_x;
         double turn = gamepad1.right_stick_x;
 
@@ -182,14 +182,14 @@ public class BoomerangTeleopRough extends OpMode{
 
             slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
             if (slides.getCurrentPosition() > 0) {
-                slides.setPower(-0.5);
-                lift = slides.getCurrentPosition();
+            slides.setPower(-0.5);
+               lift = slides.getCurrentPosition();
             }
-            else {
+                  else {
                 slides.setPower(0.01);
                 slides.setTargetPosition(0);
-            }
-        }
+         }
+      }
 
     }
 }
