@@ -14,14 +14,20 @@ public class BoomerangTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
         //init drivetrain
-        driveTrain DriveTrain = new driveTrain(hardwareMap, driveTrain.Reverse.RevLeft,  new IMU.Parameters(
-                new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)
+        driveTrain DriveTrain = new driveTrain(hardwareMap,
+                new String[]{"frontRight", "frontLeft", "backRight", "backLeft"},
+                driveTrain.Reverse.RevLeft,
+                new String("imu"),gi
+                new IMU.Parameters(
+                        new RevHubOrientationOnRobot(
+                                RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
+                                RevHubOrientationOnRobot.UsbFacingDirection.UP)
 
-        ),(x) -> {return x;});
+                ), (x) -> {
+            return x;
+        });
 
-
+        /*
         DcMotorEx arm;
         DcMotorEx slides;
         Servo claw;
@@ -40,16 +46,14 @@ public class BoomerangTeleop extends LinearOpMode {
         slides.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
-
-
-
+        */
 
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
-                DriveTrain.update(-gamepad1.left_stick_y,gamepad1.left_stick_x,gamepad1.right_stick_x, gamepad1.start);
+                DriveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
                 // code goes here!,
-
+                /*
                 int lift = slides.getCurrentPosition();
 
                 //programs A button for claw
@@ -146,12 +150,12 @@ public class BoomerangTeleop extends LinearOpMode {
                         slides.setPower(0.01);
                         slides.setTargetPosition(0);
                     }
-                }
 
+                 */
             }
+
         }
-
-
-
     }
-        }
+}
+
+
