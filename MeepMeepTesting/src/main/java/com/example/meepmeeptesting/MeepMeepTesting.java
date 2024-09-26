@@ -83,8 +83,9 @@ public class MeepMeepTesting {
                 });
 
 
+        System.out.println(System.getProperty("user.dir"));
         meepMeep.setBackground(
-                ImageIO.read(new File("/home/siddhant/programming/robotics/into-the-sea/MeepMeepTesting/src/main/java/com/example/meepmeeptesting/meepmeep.png"))
+                ImageIO.read(new File("MeepMeepTesting/src/main/java/com/example/meepmeeptesting/meepmeep.png"))
         ).setDarkMode(true).setBackgroundAlpha(0.95f).addEntity(myBot).start();
     }
 }
