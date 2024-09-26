@@ -17,7 +17,7 @@ public class BoomerangTeleop extends LinearOpMode {
         driveTrain DriveTrain = new driveTrain(hardwareMap,
                 new String[]{"frontRight", "frontLeft", "backRight", "backLeft"},
                 driveTrain.Reverse.RevLeft,
-                new String("imu"),gi
+                new String("imu"),
                 new IMU.Parameters(
                         new RevHubOrientationOnRobot(
                                 RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
@@ -38,7 +38,7 @@ public class BoomerangTeleop extends LinearOpMode {
         claw = hardwareMap.get(Servo.class, "Claw");
         wrist = hardwareMap.get(Servo.class, "Wrist");
 
-        boolean claw_up = false;
+       boolean claw_up = false;
         boolean arm_up = false;
         int sample = 0;
 
