@@ -24,6 +24,9 @@ public class BoomerangTeleop extends LinearOpMode {
                 x -> x
         );
 
+        waitForStart();
+
+
         /*
         DcMotorEx arm;
         DcMotorEx slides;
