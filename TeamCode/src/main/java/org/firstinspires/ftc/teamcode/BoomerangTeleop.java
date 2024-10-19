@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystems.driveTrain;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -29,10 +28,10 @@ public class BoomerangTeleop extends LinearOpMode {
 
         arm = hardwareMap.get(DcMotorEx.class, "Arm");
         slides = hardwareMap.get(DcMotorEx.class, "Slides");
-        claw = hardwareMap.get(Servo.class, "Claw");
+//        claw = hardwareMap.get(Servo.class, "Claw");
         wrist = hardwareMap.get(Servo.class, "Wrist");
 
-        boolean claw_up = false;
+//        boolean claw_up = false;
         boolean arm_up = false;
         int sample = 0;
 
@@ -53,28 +52,28 @@ public class BoomerangTeleop extends LinearOpMode {
                 int lift = slides.getCurrentPosition();
 
                 //programs A button for claw
-                if (gamepad1.a){
-                    if (!claw_up) {
-                        claw.setPosition(1);
-                        claw_up = true;
-                    }
-                    else{
-                        claw.setPosition(0);
-                        claw_up = false;
-                    }
-                }
+//                if (gamepad1.a){
+//                    if (!claw_up) {
+//                        claw.setPosition(1);
+//                        claw_up = true;
+//                    }
+//                    else{
+//                        claw.setPosition(0);
+//                        claw_up = false;
+//                    }
+//                }
 
                 //checks to see if the arm is up. Then brings it down or takes it down.
                 //programs B button for arm
                 if (gamepad1.b){
                     if (!arm_up){
                         arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                        arm.setTargetPosition(500);
+                        arm.setTargetPosition(600);
                         arm.setPower(0.5);
                         wrist.setPosition(1);
-                        claw.setPosition(1);
+//                        claw.setPosition(1);
                         arm_up = true;
-                        claw_up = true;
+//                        claw_up = true;
                     }
                     else if (arm_up){
                         arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
@@ -89,21 +88,23 @@ public class BoomerangTeleop extends LinearOpMode {
                     sample ++;
                     if (sample % 2 != 0) {
                         //arm.setDirection(DcMotorEx.Direction.REVERSE);
-                        arm.setPower(-0.5);
-                        arm.setTargetPosition(500);
-                        wrist.setPosition(0);}
-                    else {
                         arm.setPower(0.5);
                         arm.setTargetPosition(0);
+                        wrist.setPosition(0);
+                    arm_up = false;}
+                    else {
+                        arm.setPower(0.5);
+                        arm.setTargetPosition(600);
                         wrist.setPosition(0.5);
-                        claw.setPosition(0);
+//                        claw.setPosition(0);
+                        arm_up = true;
                     }
                 }
                 if (gamepad1.y){
                     if (!arm_up){
                         arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                         arm.setPower(0.5);
-                        arm.setTargetPosition(500);
+                        arm.setTargetPosition(600);
                         arm_up = true;
                     }
                     else {

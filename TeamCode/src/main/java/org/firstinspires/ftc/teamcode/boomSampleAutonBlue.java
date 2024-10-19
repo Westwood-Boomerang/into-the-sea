@@ -67,6 +67,8 @@ public class boomSampleAutonBlue extends LinearOpMode{
                 //go to bar
                 .splineTo(new Vector2d(12, 40), Math.toRadians(270))
                 .addDisplacementMarker(() -> {
+                            arm.setPower(0.8);
+                            arm.setTargetPosition(700);
                             slides.setPower(0.8);
                             slides.setTargetPosition(250);
                         }
@@ -82,13 +84,15 @@ public class boomSampleAutonBlue extends LinearOpMode{
                 .addDisplacementMarker(() -> {
                     slides.setPower(0.5);
                     slides.setTargetPosition(0);
+                    arm.setPower(0.5);
+                    arm.setTargetPosition(800);
                     claw.setPosition(0);
                 })
                 //go to bucket
                 .lineToSplineHeading(new Pose2d(53, 53, Math.toRadians(225)))
                 .addDisplacementMarker(() -> {
                     arm.setPower(0.5);
-                    arm.setTargetPosition(500);
+                    arm.setTargetPosition(300);
                     slides.setPower(0.8);
                     slides.setTargetPosition(500);
                     wrist.setPosition(1);
@@ -98,7 +102,7 @@ public class boomSampleAutonBlue extends LinearOpMode{
                 .lineToSplineHeading(new Pose2d(58, 37, Math.toRadians(270)))
                 .addDisplacementMarker(() -> {
                     arm.setPower(0.5);
-                    arm.setTargetPosition(0);
+                    arm.setTargetPosition(800);
                     slides.setPower(0.5);
                     slides.setTargetPosition(0);
                     claw.setPosition(0);
@@ -107,7 +111,7 @@ public class boomSampleAutonBlue extends LinearOpMode{
                 .lineToSplineHeading(new Pose2d(53, 53, Math.toRadians(225)))
                 .addDisplacementMarker(() -> {
                     arm.setPower(0.5);
-                    arm.setTargetPosition(500);
+                    arm.setTargetPosition(300);
                     slides.setPower(0.8);
                     slides.setTargetPosition(500);
                     wrist.setPosition(1);
@@ -117,7 +121,7 @@ public class boomSampleAutonBlue extends LinearOpMode{
                 .lineToSplineHeading(new Pose2d(58, 25, Math.toRadians(180)))
                 .addDisplacementMarker(() -> {
                     arm.setPower(0.5);
-                    arm.setTargetPosition(0);
+                    arm.setTargetPosition(800);
                     slides.setPower(0.5);
                     slides.setTargetPosition(0);
                     claw.setPosition(0);
@@ -126,7 +130,7 @@ public class boomSampleAutonBlue extends LinearOpMode{
                 .lineToSplineHeading(new Pose2d(53, 53, Math.toRadians(225)))
                 .addDisplacementMarker(() -> {
                     arm.setPower(0.5);
-                    arm.setTargetPosition(500);
+                    arm.setTargetPosition(300);
                     slides.setPower(0.8);
                     slides.setTargetPosition(500);
                     wrist.setPosition(1);
@@ -135,6 +139,8 @@ public class boomSampleAutonBlue extends LinearOpMode{
                 //go to bar
                 .lineToSplineHeading(new Pose2d(12, 35, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
+                    arm.setPower(0.5);
+                    arm.setTargetPosition(600);
                     slides.setPower(0.5);
                     slides.setTargetPosition(225);
                     claw.setPosition(0);
