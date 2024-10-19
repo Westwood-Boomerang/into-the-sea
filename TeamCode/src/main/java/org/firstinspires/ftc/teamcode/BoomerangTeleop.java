@@ -3,14 +3,17 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
+import org.firstinspires.ftc.teamcode.subsystems.LinearSlide;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
-
+import com.qualcomm.robotcore.hardware.Gamepad;
 @TeleOp(name = "BoomerangTeleop")
 public class BoomerangTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
+        Gamepad currGamepad = new Gamepad();
+        Gamepad prevGamepad = new Gamepad();
         //init drivetrain
         DriveTrain driveTrain = new DriveTrain(hardwareMap,
                 new String[]{"frontRight", "frontLeft", "backRight", "backLeft"},
@@ -24,7 +27,10 @@ public class BoomerangTeleop extends LinearOpMode {
                 ),
                 x -> x
         );
-
+        DcMotorEx arm = hardwareMap.get(DcMotorEx.class, "arm");
+        DcMotorEx slide = hardwareMap.get(DcMotorEx.class, "slide");
+        arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
 
 
@@ -50,7 +56,16 @@ public class BoomerangTeleop extends LinearOpMode {
 
 
         while (opModeIsActive()) {
-            driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
+            prevGamepad.copy(currGamepad);
+            currGamepad.copy(gamepad1);
+
+            driveTrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
+            //arm.update(currGamepad.dpad_up && !prevGamepad.dpad_up, false, false, false);
+            //if (gamepad1.dpad_up)
+            //foo.setPower(1.0);
+            //else foo.setPower(0.0);
+
+
             // code goes here!,
             /*
             int lift = slides.getCurrentPosition();
