@@ -4,6 +4,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 
 @TeleOp(name = "BoomerangTeleop")
@@ -27,7 +28,6 @@ public class BoomerangTeleop extends LinearOpMode {
         waitForStart();
 
 
-        /*
         DcMotorEx arm;
         DcMotorEx slides;
         Servo claw;
@@ -35,10 +35,10 @@ public class BoomerangTeleop extends LinearOpMode {
 
         arm = hardwareMap.get(DcMotorEx.class, "Arm");
         slides = hardwareMap.get(DcMotorEx.class, "Slides");
-        claw = hardwareMap.get(Servo.class, "Claw");
+//        claw = hardwareMap.get(Servo.class, "Claw");
         wrist = hardwareMap.get(Servo.class, "Wrist");
 
-        boolean claw_up = false;
+//        boolean claw_up = false;
         boolean arm_up = false;
         int sample = 0;
 
@@ -46,7 +46,7 @@ public class BoomerangTeleop extends LinearOpMode {
         slides.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
-        */
+
 
 
         while (opModeIsActive()) {
@@ -55,90 +55,92 @@ public class BoomerangTeleop extends LinearOpMode {
             /*
             int lift = slides.getCurrentPosition();
 
-            //programs A button for claw
-            if (gamepad1.a){
-                if (!claw_up) {
-                    claw.setPosition(1);
-                    claw_up = true;
-                }
-                else{
-                    claw.setPosition(0);
-                    claw_up = false;
-                }
-            }
+                //programs A button for claw
+//                if (gamepad1.a){
+//                    if (!claw_up) {
+//                        claw.setPosition(1);
+//                        claw_up = true;
+//                    }
+//                    else{
+//                        claw.setPosition(0);
+//                        claw_up = false;
+//                    }
+//                }
 
-            //checks to see if the arm is up. Then brings it down or takes it down.
-            //programs B button for arm
-            if (gamepad1.b){
-                if (!arm_up){
-                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    arm.setTargetPosition(500);
-                    arm.setPower(0.5);
-                    wrist.setPosition(1);
-                    claw.setPosition(1);
-                    arm_up = true;
-                    claw_up = true;
+                //checks to see if the arm is up. Then brings it down or takes it down.
+                //programs B button for arm
+                if (gamepad1.b){
+                    if (!arm_up){
+                        arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                        arm.setTargetPosition(600);
+                        arm.setPower(0.5);
+                        wrist.setPosition(1);
+//                        claw.setPosition(1);
+                        arm_up = true;
+//                        claw_up = true;
+                    }
+                    else if (arm_up){
+                        arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                        arm.setTargetPosition(0);
+                        arm.setPower(0.5);
+                        wrist.setPosition(0.5);
+                        arm_up = false;
+                    }
                 }
-                else if (arm_up){
-                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    arm.setTargetPosition(0);
-                    arm.setPower(0.5);
-                    wrist.setPosition(0.5);
-                    arm_up = false;
-                }
-            }
 
-            if (gamepad1.x) {
-                sample ++;
-                if (sample % 2 != 0) {
-                    //arm.setDirection(DcMotorEx.Direction.REVERSE);
-                    arm.setPower(-0.5);
-                    arm.setTargetPosition(500);
-                    wrist.setPosition(0);}
+                if (gamepad1.x) {
+                    sample ++;
+                    if (sample % 2 != 0) {
+                        //arm.setDirection(DcMotorEx.Direction.REVERSE);
+                        arm.setPower(0.5);
+                        arm.setTargetPosition(0);
+                        wrist.setPosition(0);
+                    arm_up = false;}
+                    else {
+                        arm.setPower(0.5);
+                        arm.setTargetPosition(600);
+                        wrist.setPosition(0.5);
+//                        claw.setPosition(0);
+                        arm_up = true;
+                    }
+                }
+                if (gamepad1.y){
+                    if (!arm_up){
+                        arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                        arm.setPower(0.5);
+                        arm.setTargetPosition(600);
+                        arm_up = true;
+                    }
+                    else {
+                        arm.setPower(0.5);
+                        arm.setTargetPosition(0);
+                        arm_up = false;
+                    }
+                }
+                //keeps the slides while left trigger is not pressed
+                if (gamepad1.right_trigger <= 0.3){
+                    slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                    slides.setTargetPosition(lift);
+                }
+                //moves the slides up while right trigger is pressed
                 else {
-                    arm.setPower(0.5);
-                    arm.setTargetPosition(0);
-                    wrist.setPosition(0.5);
-                    claw.setPosition(0);
+                    slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                    if (slides.getCurrentPosition() < 495) {
+                        slides.setPower(0.5);
+                        lift = slides.getCurrentPosition();
+                    }
+                    else{
+                        slides.setPower(-0.01);
+                        slides.setTargetPosition(495);
+                    }
                 }
-            }
-            if (gamepad1.y){
-                if (!arm_up){
-                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    arm.setPower(0.5);
-                    arm.setTargetPosition(500);
-                    arm_up = true;
+                //keeps the slides while left trigger is not pressed
+                if (gamepad1.left_trigger <= 0.3){
+                    slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                    slides.setTargetPosition(lift);
                 }
+                //moves the slides down while left trigger is pressed
                 else {
-                    arm.setPower(0.5);
-                    arm.setTargetPosition(0);
-                    arm_up = false;
-                }
-            }
-            //keeps the slides while left trigger is not pressed
-            if (gamepad1.right_trigger <= 0.3){
-                slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                slides.setTargetPosition(lift);
-            }
-            //moves the slides up while right trigger is pressed
-            else {
-                slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                if (slides.getCurrentPosition() < 495) {
-                    slides.setPower(0.5);
-                    lift = slides.getCurrentPosition();
-                }
-                else{
-                    slides.setPower(-0.01);
-                    slides.setTargetPosition(495);
-                }
-            }
-            //keeps the slides while left trigger is not pressed
-            if (gamepad1.left_trigger <= 0.3){
-                slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                slides.setTargetPosition(lift);
-            }
-            //moves the slides down while left trigger is pressed
-            else {
 
                 slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 if (slides.getCurrentPosition() > 0) {
