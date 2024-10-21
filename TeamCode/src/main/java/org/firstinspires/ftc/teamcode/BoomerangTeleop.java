@@ -24,8 +24,8 @@ public class BoomerangTeleop extends LinearOpMode {
                 "imu",
                 new IMU.Parameters(
                         new RevHubOrientationOnRobot(
-                                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+                                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
                         )
                 ),
                 x -> x
@@ -79,14 +79,14 @@ public class BoomerangTeleop extends LinearOpMode {
             }
 
             if  (gamepad1.left_bumper) {
-                arm.setPower(0.015);
-                arm.setTargetPosition(1);
+                arm.setPower(-0.5);
+                arm.setTargetPosition(-150);
 
             } else if (gamepad1.right_bumper) {
-                arm.setPower(-0.015);
+                arm.setPower(0.5);
                 arm.setTargetPosition(0);
             } else {
-                arm.setPower(0.015);
+                arm.setPower(0);
                 arm.setTargetPosition(currentArmPos);
             }
             arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
