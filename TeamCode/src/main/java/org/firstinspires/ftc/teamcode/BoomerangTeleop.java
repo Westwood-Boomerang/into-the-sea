@@ -32,8 +32,8 @@ public class BoomerangTeleop extends LinearOpMode {
         );
         DcMotorEx arm = hardwareMap.get(DcMotorEx.class, "Arm");
         DcMotorEx slides = hardwareMap.get(DcMotorEx.class, "Slides");
-        arm.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        slides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        slides.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         slides.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         waitForStart();
@@ -59,26 +59,28 @@ public class BoomerangTeleop extends LinearOpMode {
             currentArmPos = arm.getCurrentPosition();
 
                 //programs A button for claw
-//               if (gamepad1.left_bumper){
+//               if (gamepad1.dpad_up){
 //                        claw.setPosition(1);
-//               } else if (gamepad1.right_bumper) {
+//               } else if (gamepad1.dpad_down) {
 //                        claw.setPosition(0);
 //                    }
 
             //checks to see if the arm is up. Then brings it down or takes it down.
             //programs B button for arm
             if (gamepad1.b){
-                arm.setPower(0.015);
-                arm.setTargetPosition(5);
+                arm.setTargetPosition(1);
                 arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                arm.setPower(0.015);
+                slides.setTargetPosition(5);
+                slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slides.setPower(0.015);
                 //wrist.setPosition(1);
 //                claw.setPosition(1);
-//                        claw_up = true;
             }
 
             if  (gamepad1.left_bumper) {
                 arm.setPower(0.015);
-                arm.setTargetPosition(2);
+                arm.setTargetPosition(1);
 
             } else if (gamepad1.right_bumper) {
                 arm.setPower(-0.015);
@@ -87,26 +89,20 @@ public class BoomerangTeleop extends LinearOpMode {
                 arm.setPower(0.015);
                 arm.setTargetPosition(currentArmPos);
             }
+            arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
             if (gamepad1.x) {
-                slide.
+                slides.setTargetPosition(0);
+                slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slides.setPower(-0.015);
 
-                arm.setPower(-0.015);
-                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 arm.setTargetPosition(0);
+                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 //wrist.setPosition(0);
+                arm.setPower(-0.015);
               }
 
-            if (gamepad1.dpad_up){
-                arm.setPower(0.015);
-                arm.setTargetPosition(5);
-            }
-            else if (gamepad1.dpad_down) {
-                arm.setPower(0.015);
-                arm.setTargetPosition(0);
-                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-            }
 
             if (gamepad1.right_trigger >= 0.3 && slides.getCurrentPosition() < 5) {
                 // move the slides up
