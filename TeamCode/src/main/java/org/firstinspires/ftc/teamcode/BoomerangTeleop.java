@@ -1,15 +1,27 @@
 package org.firstinspires.ftc.teamcode;
 /*
+TODO: FIX RETURN STRING IT LITERALLY SNAPPED
 TODO: ADD PID CONTROLLER
+- Done: Jihoon said that builtin was good enough and I don't want to debug our PID thing
+- we can just tune the coefficients of the builtin one
 TODO: ADD CLAW ITEMS
+- ritvij has been working on the claw for 1 hour...
 TODO: ADD FTC Dash so that we can do this on the spot so it is faster
+- done
 TODO: Get rid of my crappy subsystems
+- after first comp
+
+TODO: better macros w/ claw
+TODO: Tune RR
  */
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.LinearSlide;
 import org.firstinspires.ftc.teamcode.subsystems.PIDFcontroller;
@@ -29,8 +41,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class BoomerangTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Gamepad currGamepad = new Gamepad();
-        Gamepad prevGamepad = new Gamepad();
+        Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         //init drivetrain
         DriveTrain driveTrain = new DriveTrain(hardwareMap,
                 new String[]{"frontRight", "frontLeft", "backRight", "backLeft"},
@@ -48,32 +59,35 @@ public class BoomerangTeleop extends LinearOpMode {
         DcMotorEx slides = hardwareMap.get(DcMotorEx.class, "Slides");
         arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         slides.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        arm.setPIDFCoefficients(DcMotor.RunMode.STOP_AND_RESET_ENCODER, new PIDFCoefficients(0, 0, 0, 0));
-        slides.setPIDFCoefficients(DcMotor.RunMode.STOP_AND_RESET_ENCODER, new PIDFCoefficients(0, 0, 0, 0));
+        //arm.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0, 0, 0, 0));
+        //slides.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0, 0, 0, 0));
 
         waitForStart();
-
 
         Servo claw = hardwareMap.get(Servo.class, "claw");
         Servo wrist = hardwareMap.get(Servo.class, "wrist");
 
-        arm.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        slides.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        arm.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        slides.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
+        int targetSlidePos = 0;
+        int targetArmPos = 0;
 
-//        boolean claw_up = false;
-        boolean arm_up = false;
-        int sample = 0;
-
-        int currentSlidePos = 0;
+        arm.setTargetPosition(targetArmPos);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slides.setTargetPosition(targetSlidePos);
+        slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         while (opModeIsActive()) {
-            prevGamepad.copy(currGamepad);
-            currGamepad.copy(gamepad1);
+            telemetry.addData("position", arm.getCurrentPosition());
+            telemetry.addData("velocity", arm.getPower());
+            telemetry.addData("targetArm", arm.getTargetPosition());
+            telemetry.addData("sPos", slides.getCurrentPosition());
+            telemetry.addData("sPow", slides.getPower());
+            telemetry.addData("targetSlides", slides.getTargetPosition());
+            telemetry.update();
 
             driveTrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
-
-            currentSlidePos = slides.getCurrentPosition();
 
             if (gamepad1.dpad_up) {
                 claw.setPosition(1);
@@ -84,44 +98,40 @@ public class BoomerangTeleop extends LinearOpMode {
             //checks to see if the arm is up. Then brings it down or takes it down.
             //programs B button for arm
             if (gamepad1.b) {
-                slides.setTargetPosition(5);
-                slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                slides.setPower(0.015);
-                arm.setTargetPosition(1);
-                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                arm.setPower(0.015);
+                targetSlidePos = 10000;
+                targetArmPos = -250;
 //                wrist.setPosition(1);
 //                claw.setPosition(1);
             }
             // Who knows what this does... idk
 
-            if (gamepad1.x) {
-                slides.setTargetPosition(0);
-                slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slides.setPower(-0.015);
+            else if (gamepad1.a) {
+                targetSlidePos = 0;
 
-                //arm.setTargetPosition(0);
-                //arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                //wrist.setPosition(0);
-                //arm.setPower(-0.015);
+                targetArmPos = 0;
                 //currentArmPos = arm.getCurrentPosition();
+            } else if (gamepad1.left_bumper) {
+                targetArmPos = Math.min(arm.getCurrentPosition() + 10, 0);
+            } else if (gamepad1.right_bumper) {
+                targetArmPos = Math.max(-250, arm.getCurrentPosition() - 10);
             }
 
+            arm.setTargetPosition(targetArmPos);
+            // TODO: adjust power - need more power on way up and when closer to horizontal (math.cos or smth)
+            // we don't need very much power at the top
+            arm.setPower(0.5);
+            arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-            if (gamepad1.right_trigger >= 0.3 && slides.getCurrentPosition() < 5) {
-                // move the slides up
-                slides.setPower(0.05);
-                slides.setTargetPosition(150);
-            } else if (gamepad1.left_trigger >= 0.3 && slides.getCurrentPosition() > 0) {
-                // move the slides down
-                slides.setPower(-0.05);
-                slides.setTargetPosition(0);
-            } else {
-                // maintain current position
-                slides.setTargetPosition(currentSlidePos);
-                slides.setPower(0);
+            if (gamepad1.right_trigger >= 0.3) {
+                // TODO: figure out what max slide position is
+                targetSlidePos = Math.min(slides.getCurrentPosition() + 10, 10000);
+            } else if (gamepad1.left_trigger >= 0.3) {
+                targetSlidePos = Math.max(slides.getCurrentPosition() - 10, 0);
             }
+
+            slides.setTargetPosition(targetSlidePos);
             slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            slides.setPower(0.5);
         }
     }
 }
