@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode;
-
+/*
+TODO: ADD PID CONTROLLER
+TODO: ADD CLAW ITEMS
+TODO: ADD FTC Dash so that we can do this on the spot so it is faster
+TODO: Get rid of my crappy subsystems
+ */
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -14,6 +19,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import com.acmerobotics.dashboard.config.Config;
+
+@Config
 @TeleOp(name = "BoomerangTeleop")
 public class BoomerangTeleop extends LinearOpMode {
     @Override
