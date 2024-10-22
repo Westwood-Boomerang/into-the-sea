@@ -46,17 +46,18 @@ public class BoomerangTeleop extends LinearOpMode {
         boolean arm_up = false;
         int sample = 0;
 
-        int currentSlidePos, currentArmPos;
+        int currentSlidePos, currentArmPos = 0;
 
         while (opModeIsActive()) {
             prevGamepad.copy(currGamepad);
             currGamepad.copy(gamepad1);
 
+            currentArmPos = arm.getCurrentPosition();
+
             driveTrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
             //arm.update(currGamepad.dpad_up && !prevGamepad.dpad_up, false, false, false);
 
             currentSlidePos = slides.getCurrentPosition();
-            currentArmPos = arm.getCurrentPosition();
 
                 //programs A button for claw
 //               if (gamepad1.dpad_up){
@@ -74,19 +75,21 @@ public class BoomerangTeleop extends LinearOpMode {
                 slides.setTargetPosition(5);
                 slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slides.setPower(0.015);
+                currentArmPos = arm.getCurrentPosition();
                 //wrist.setPosition(1);
 //                claw.setPosition(1);
             }
 
             if  (gamepad1.left_bumper) {
-                arm.setPower(-0.5);
-                arm.setTargetPosition(-150);
-
+                arm.setPower(-0.1);
+                arm.setTargetPosition(-300);
+                currentArmPos = arm.getCurrentPosition();
             } else if (gamepad1.right_bumper) {
-                arm.setPower(0.5);
+                arm.setPower(0.1);
                 arm.setTargetPosition(0);
+                currentArmPos = arm.getCurrentPosition();
             } else {
-                arm.setPower(0);
+                arm.setPower(1);
                 arm.setTargetPosition(currentArmPos);
             }
             arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
@@ -100,6 +103,7 @@ public class BoomerangTeleop extends LinearOpMode {
                 arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 //wrist.setPosition(0);
                 arm.setPower(-0.015);
+                currentArmPos = arm.getCurrentPosition();
               }
 
 
@@ -107,7 +111,7 @@ public class BoomerangTeleop extends LinearOpMode {
             if (gamepad1.right_trigger >= 0.3 && slides.getCurrentPosition() < 5) {
                 // move the slides up
                 slides.setPower(0.05);
-                slides.setTargetPosition(5);
+                slides.setTargetPosition(150);
             } else if (gamepad1.left_trigger >= 0.3 && slides.getCurrentPosition() > 0) {
                 // move the slides down
                 slides.setPower(-0.05);
