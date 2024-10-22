@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 /*
 TODO: FIX RETURN STRING IT LITERALLY SNAPPED
-TODO: ADD PID CONTROLLER
-- Done: Jihoon said that builtin was good enough and I don't want to debug our PID thing
-- we can just tune the coefficients of the builtin one
+
 TODO: ADD CLAW ITEMS
 - ritvij has been working on the claw for 1 hour...
 TODO: ADD FTC Dash so that we can do this on the spot so it is faster
@@ -72,7 +70,9 @@ public class BoomerangTeleop extends LinearOpMode {
 
         int targetSlidePos = 0;
         int targetArmPos = 0;
-
+        double UpPower = 0.2;
+        double DownPower = 0.1;
+        double CurrPower = 0.0;
         arm.setTargetPosition(targetArmPos);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slides.setTargetPosition(targetSlidePos);
@@ -82,8 +82,8 @@ public class BoomerangTeleop extends LinearOpMode {
             telemetry.addData("position", arm.getCurrentPosition());
             telemetry.addData("velocity", arm.getPower());
             telemetry.addData("targetArm", arm.getTargetPosition());
-            telemetry.addData("sPos", slides.getCurrentPosition());
-            telemetry.addData("sPow", slides.getPower());
+            telemetry.addData("slide Pos", slides.getCurrentPosition());
+            telemetry.addData("slide Pow", slides.getPower());
             telemetry.addData("targetSlides", slides.getTargetPosition());
             telemetry.update();
 
@@ -103,6 +103,7 @@ public class BoomerangTeleop extends LinearOpMode {
 //                wrist.setPosition(1);
 //                claw.setPosition(1);
             }
+// TODO: Someone tell me whats this supposed to do
             // Who knows what this does... idk
 
             else if (gamepad1.a) {
@@ -125,13 +126,15 @@ public class BoomerangTeleop extends LinearOpMode {
             if (gamepad1.right_trigger >= 0.3) {
                 // TODO: figure out what max slide position is
                 targetSlidePos = Math.min(slides.getCurrentPosition() + 10, 10000);
+                CurrPower = UpPower; // TODO: Someone correct me if I am wrong
             } else if (gamepad1.left_trigger >= 0.3) {
                 targetSlidePos = Math.max(slides.getCurrentPosition() - 10, 0);
+                CurrPower = DownPower;
             }
 
             slides.setTargetPosition(targetSlidePos);
             slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-            slides.setPower(0.5);
+            slides.setPower(CurrPower);
         }
     }
 }
