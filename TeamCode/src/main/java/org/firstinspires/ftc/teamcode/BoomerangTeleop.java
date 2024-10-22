@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.LinearSlide;
+import org.firstinspires.ftc.teamcode.subsystems.PIDFcontroller;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -32,6 +35,8 @@ public class BoomerangTeleop extends LinearOpMode {
         );
         DcMotorEx arm = hardwareMap.get(DcMotorEx.class, "Arm");
         DcMotorEx slides = hardwareMap.get(DcMotorEx.class, "Slides");
+        PIDFcontroller armPidf = new PIDFcontroller(0, 0, 0, 0, 0, 10, 0.8);
+        LinearSlide armController = new LinearSlide(arm, new int []{ 0, -300 }, 0, armPidf);
         arm.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         slides.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -41,21 +46,22 @@ public class BoomerangTeleop extends LinearOpMode {
         Servo claw = hardwareMap.get(Servo.class, "claw");
         Servo wrist = hardwareMap.get(Servo.class, "wrist");
 
+        arm.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        slides.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
 
 //        boolean claw_up = false;
         boolean arm_up = false;
         int sample = 0;
 
-        int currentSlidePos, currentArmPos = 0;
+        int currentSlidePos = 0;
 
         while (opModeIsActive()) {
             prevGamepad.copy(currGamepad);
             currGamepad.copy(gamepad1);
 
-            currentArmPos = arm.getCurrentPosition();
-
             driveTrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
-            //arm.update(currGamepad.dpad_up && !prevGamepad.dpad_up, false, false, false);
+            armController.update(gamepad1.left_bumper, gamepad1.right_bumper, gamepad1.a, gamepad1.b);
 
             currentSlidePos = slides.getCurrentPosition();
 
@@ -75,35 +81,20 @@ public class BoomerangTeleop extends LinearOpMode {
                 slides.setTargetPosition(5);
                 slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slides.setPower(0.015);
-                currentArmPos = arm.getCurrentPosition();
                 //wrist.setPosition(1);
 //                claw.setPosition(1);
             }
-
-            if  (gamepad1.left_bumper) {
-                arm.setPower(-0.1);
-                arm.setTargetPosition(-300);
-                currentArmPos = arm.getCurrentPosition();
-            } else if (gamepad1.right_bumper) {
-                arm.setPower(0.1);
-                arm.setTargetPosition(0);
-                currentArmPos = arm.getCurrentPosition();
-            } else {
-                arm.setPower(1);
-                arm.setTargetPosition(currentArmPos);
-            }
-            arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
             if (gamepad1.x) {
                 slides.setTargetPosition(0);
                 slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slides.setPower(-0.015);
 
-                arm.setTargetPosition(0);
-                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                //arm.setTargetPosition(0);
+                //arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 //wrist.setPosition(0);
-                arm.setPower(-0.015);
-                currentArmPos = arm.getCurrentPosition();
+                //arm.setPower(-0.015);
+                //currentArmPos = arm.getCurrentPosition();
               }
 
 
