@@ -113,7 +113,7 @@ public class BoomerangTeleop extends LinearOpMode {
                 arm.setPower(0.75 * Math.cos((Math.PI / 600) * arm.getCurrentPosition()));
             } else if (arm.getCurrentPosition() >= arm.getTargetPosition()) {
                 arm.setPower(0.75 * Math.cos((Math.PI / 600) * arm.getCurrentPosition()));
-            }t
+            }
             arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
             if (gamepad1.right_trigger >= 0.3) {
