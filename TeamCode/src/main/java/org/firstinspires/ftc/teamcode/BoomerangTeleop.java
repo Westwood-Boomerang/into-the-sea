@@ -89,12 +89,6 @@ public class BoomerangTeleop extends LinearOpMode {
 
             driveTrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
 
-            if (gamepad1.dpad_up) {
-                claw.setPosition(1);
-            } else if (gamepad1.dpad_down) {
-                claw.setPosition(0);
-            }
-
             //checks to see if the arm is up. Then brings it down or takes it down.
             //programs B button for arm
             if (gamepad1.b) {
@@ -102,13 +96,8 @@ public class BoomerangTeleop extends LinearOpMode {
                 targetArmPos = -250;
 //                wrist.setPosition(1);
 //                claw.setPosition(1);
-            }
-// TODO: Someone tell me whats this supposed to do
-            // Who knows what this does... idk
-
-            else if (gamepad1.a) {
+            } else if (gamepad1.a) {
                 targetSlidePos = 0;
-
                 targetArmPos = 0;
                 //currentArmPos = arm.getCurrentPosition();
             } else if (gamepad1.left_bumper) {
@@ -120,7 +109,11 @@ public class BoomerangTeleop extends LinearOpMode {
             arm.setTargetPosition(targetArmPos);
             // TODO: adjust power - need more power on way up and when closer to horizontal (math.cos or smth)
             // we don't need very much power at the top
-            arm.setPower(0.5);
+            if (arm.getCurrentPosition() >= arm.getTargetPosition()) {
+                arm.setPower(0.75 * Math.cos((Math.PI / 600) * arm.getCurrentPosition()));
+            } else if (arm.getCurrentPosition() >= arm.getTargetPosition()) {
+                arm.setPower(0.75 * Math.cos((Math.PI / 600) * arm.getCurrentPosition()));
+            }t
             arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
             if (gamepad1.right_trigger >= 0.3) {
@@ -132,6 +125,11 @@ public class BoomerangTeleop extends LinearOpMode {
                 CurrPower = DownPower;
             }
 
+            if (gamepad1.dpad_up) {
+                claw.setPosition(1);
+            } else if (gamepad1.dpad_down) {
+                claw.setPosition(0);
+            }
             slides.setTargetPosition(targetSlidePos);
             slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
             slides.setPower(CurrPower);
