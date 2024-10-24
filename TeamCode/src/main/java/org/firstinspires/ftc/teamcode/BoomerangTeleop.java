@@ -1,16 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 /*
 TODO: FIX RETURN STRING IT LITERALLY SNAPPED
+- Done
 
 TODO: ADD CLAW ITEMS
 - ritvij has been working on the claw for 1 hour...
-TODO: ADD FTC Dash so that we can do this on the spot so it is faster
-- done
+- what now?
+
+
 TODO: Get rid of my crappy subsystems
 - after first comp
 
 TODO: better macros w/ claw
 TODO: Tune RR
+
  */
 
 import com.acmerobotics.dashboard.FtcDashboard;
