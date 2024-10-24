@@ -115,7 +115,6 @@ public class BoomerangTeleop extends LinearOpMode {
                 arm.setPower(0.75 * Math.cos((Math.PI / 600) * arm.getCurrentPosition()));
             }
             arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
             if (gamepad1.right_trigger >= 0.3) {
                 // TODO: figure out what max slide position is
                 targetSlidePos = Math.min(slides.getCurrentPosition() + 10, 10000);
@@ -130,7 +129,14 @@ public class BoomerangTeleop extends LinearOpMode {
             } else if (gamepad1.dpad_down) {
                 claw.setPosition(0);
             }
+
+            if (gamepad1.dpad_left) {
+                wrist.setPosition(wrist.getPosition()+0.1);
+            } else if (gamepad1.dpad_right) {
+                wrist.setPosition(wrist.getPosition()-0.1);
+            }
             slides.setTargetPosition(targetSlidePos);
+
             slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
             slides.setPower(CurrPower);
         }
