@@ -96,7 +96,7 @@ public class BoomerangTeleop extends LinearOpMode {
             //programs B button for arm
             if (gamepad1.b) {
                 targetSlidePos = 4000;
-                targetArmPos = -250;
+                targetArmPos = 1736;
                 wrist.setPosition(1);
                 claw.setPosition(1);
             } else if (gamepad1.a) {
@@ -104,31 +104,31 @@ public class BoomerangTeleop extends LinearOpMode {
                 targetArmPos = 0;
                 //currentArmPos = arm.getCurrentPosition();
             } else if (gamepad1.x) {
-                targetSlidePos = 1000;
+                targetSlidePos = 4000;
                 targetArmPos = 0;
                 claw.setPosition(1);
             } else if (gamepad1.left_bumper) {
-                targetArmPos = Math.min(arm.getCurrentPosition() + 10, 0);
+                targetArmPos = Math.max(arm.getCurrentPosition() - 100, 0);
             } else if (gamepad1.right_bumper) {
-                targetArmPos = Math.max(-500, arm.getCurrentPosition() - 10);
+                targetArmPos = Math.min(1736, arm.getCurrentPosition() + 100);
             }
 
             arm.setTargetPosition(targetArmPos);
-            // TODO: adjust power - need more power on way up and when closer to horizontal (math.cos or smth)
+            // TODO: adjustpower - need more power on way up and when closer to horizontal (math.cos or smth)
             // we don't need very much power at the top
             /*if (arm.getCurrentPosition() >= arm.getTargetPosition()) {
                 arm.setPower(0.75 * Math.cos((Math.PI / 600) * arm.getCurrentPosition()));
             } else if (arm.getCurrentPosition() >= arm.getTargetPosition()) {
                 arm.setPower(0.75 * Math.cos((Math.PI / 600) * arm.getCurrentPosition()));
             }*/
-            arm.setPower(2.0);
+            arm.setPower(0.75);
             arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
             if (gamepad1.right_trigger >= 0.3) {
                 // TODO: figure out what max slide position is
-                targetSlidePos = Math.min(slides.getCurrentPosition() + 10, 4000);
+                targetSlidePos = Math.min(slides.getCurrentPosition() + 50, 4000);
                 CurrPower = UpPower; // TODO: Someone correct me if I am wrong
             } else if (gamepad1.left_trigger >= 0.3) {
-                targetSlidePos = Math.max(slides.getCurrentPosition() - 10, 0);
+                targetSlidePos = Math.max(slides.getCurrentPosition() - 50, 0);
                 CurrPower = DownPower;
             }
 
