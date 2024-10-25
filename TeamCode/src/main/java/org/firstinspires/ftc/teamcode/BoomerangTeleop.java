@@ -88,6 +88,8 @@ public class BoomerangTeleop extends LinearOpMode {
             telemetry.addData("slide Pos", slides.getCurrentPosition());
             telemetry.addData("slide Pow", slides.getPower());
             telemetry.addData("targetSlides", slides.getTargetPosition());
+            telemetry.addData("w", wrist.getPosition());
+            telemetry.addData("c", claw.getPosition());
             telemetry.update();
 
             driveTrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
