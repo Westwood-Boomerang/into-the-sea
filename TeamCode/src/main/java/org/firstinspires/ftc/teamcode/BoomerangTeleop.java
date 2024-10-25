@@ -100,12 +100,16 @@ public class BoomerangTeleop extends LinearOpMode {
             if (gamepad1.b) {
                 targetSlidePos = 4000;
                 targetArmPos = -250;
-//                wrist.setPosition(1);
-//                claw.setPosition(1);
+                wrist.setPosition(1);
+                claw.setPosition(1);
             } else if (gamepad1.a) {
                 targetSlidePos = 0;
                 targetArmPos = 0;
                 //currentArmPos = arm.getCurrentPosition();
+            } else if (gamepad1.x) {
+                targetSlidePos = 1000;
+                targetArmPos = 0;
+                claw.setPosition(1);
             } else if (gamepad1.left_bumper) {
                 targetArmPos = Math.min(arm.getCurrentPosition() + 10, 0);
             } else if (gamepad1.right_bumper) {
