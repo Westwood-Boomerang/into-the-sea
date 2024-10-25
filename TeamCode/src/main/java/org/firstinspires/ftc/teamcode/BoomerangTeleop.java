@@ -54,6 +54,7 @@ public class BoomerangTeleop extends LinearOpMode {
                 x -> x
         );
         DcMotorEx arm = hardwareMap.get(DcMotorEx.class, "Arm");
+        DcMotorEx arm2 = hardwareMap.get(DcMotorEx.class, "Arm2");
         DcMotorEx slides = hardwareMap.get(DcMotorEx.class, "Slides");
         arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         slides.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -66,15 +67,18 @@ public class BoomerangTeleop extends LinearOpMode {
         Servo wrist = hardwareMap.get(Servo.class, "wrist");
 
         arm.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        arm2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         slides.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         int targetSlidePos = 0;
         int targetArmPos = 0;
-        double UpPower = 0.2;
-        double DownPower = 0.1;
+        double UpPower = 0.3;
+        double DownPower = 0.3;
         double CurrPower = 0.0;
         arm.setTargetPosition(targetArmPos);
+        arm2.setTargetPosition(targetArmPos);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slides.setTargetPosition(targetSlidePos);
         slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -92,7 +96,7 @@ public class BoomerangTeleop extends LinearOpMode {
             //checks to see if the arm is up. Then brings it down or takes it down.
             //programs B button for arm
             if (gamepad1.b) {
-                targetSlidePos = 10000;
+                targetSlidePos = 4000;
                 targetArmPos = -250;
 //                wrist.setPosition(1);
 //                claw.setPosition(1);
@@ -103,21 +107,25 @@ public class BoomerangTeleop extends LinearOpMode {
             } else if (gamepad1.left_bumper) {
                 targetArmPos = Math.min(arm.getCurrentPosition() + 10, 0);
             } else if (gamepad1.right_bumper) {
-                targetArmPos = Math.max(-250, arm.getCurrentPosition() - 10);
+                targetArmPos = Math.max(-500, arm.getCurrentPosition() - 10);
             }
 
             arm.setTargetPosition(targetArmPos);
+            arm2.setTargetPosition(targetArmPos);
             // TODO: adjust power - need more power on way up and when closer to horizontal (math.cos or smth)
             // we don't need very much power at the top
-            if (arm.getCurrentPosition() >= arm.getTargetPosition()) {
+            /*if (arm.getCurrentPosition() >= arm.getTargetPosition()) {
                 arm.setPower(0.75 * Math.cos((Math.PI / 600) * arm.getCurrentPosition()));
             } else if (arm.getCurrentPosition() >= arm.getTargetPosition()) {
                 arm.setPower(0.75 * Math.cos((Math.PI / 600) * arm.getCurrentPosition()));
-            }
+            }*/
+            arm.setPower(0.5);
+            arm2.setPower(0.5);
             arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            arm2.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
             if (gamepad1.right_trigger >= 0.3) {
                 // TODO: figure out what max slide position is
-                targetSlidePos = Math.min(slides.getCurrentPosition() + 10, 10000);
+                targetSlidePos = Math.min(slides.getCurrentPosition() + 10, 4000);
                 CurrPower = UpPower; // TODO: Someone correct me if I am wrong
             } else if (gamepad1.left_trigger >= 0.3) {
                 targetSlidePos = Math.max(slides.getCurrentPosition() - 10, 0);
