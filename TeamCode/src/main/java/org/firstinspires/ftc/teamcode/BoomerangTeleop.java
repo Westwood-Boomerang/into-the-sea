@@ -91,6 +91,7 @@ public class BoomerangTeleop extends LinearOpMode {
             telemetry.addData("targetSlides", slides.getTargetPosition());
             telemetry.update();
 
+
             driveTrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
 
             //checks to see if the arm is up. Then brings it down or takes it down.
