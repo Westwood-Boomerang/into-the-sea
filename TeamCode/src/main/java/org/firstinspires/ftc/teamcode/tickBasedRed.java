@@ -52,8 +52,9 @@ public class tickBasedRed extends LinearOpMode {
         if (isStopRequested()) return;
         if (runtime.seconds() < 29.9) {
             if (opModeIsActive()) {
-                drive(1.5, 1.5, 1.5, 1.5, 5, 200, true, 1, true,5000);
-                drive(1.5, -1.5, -1.5, 1.5, 0, 1, true, 0, true,5000);
+                drive(0.5, 0.5, 0.5, 0.5, 5, 200, true, 1, true,5000);
+                drive(5, -5, -5, 5, 0, 1, true, 0, true,5000);
+
 
             }
         }
