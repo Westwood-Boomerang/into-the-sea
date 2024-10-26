@@ -91,7 +91,8 @@ public class tickBasedRed extends LinearOpMode {
                     fl.getCurrentPosition() == fl.getTargetPosition() &&
                     isSample){
                 wrist.setPosition(.3);
-                claw.setPosition(1);
+                if (clawOpen) claw.setPosition(1);
+                else claw.setPosition(0);
             }
 
         }
