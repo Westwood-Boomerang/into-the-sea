@@ -104,7 +104,6 @@ public class BoomerangTeleop extends LinearOpMode {
             else if (gamepad1.dpad_right) {
                 if (horwrist1.getPosition() >= 0.2) horwrist1.setPosition(horwrist1.getPosition() + 0.2);
             }
-            if (gamepad1.)
             //checks to see if the arm is up. Then brings it down or takes it down.
             //programs B button for arm
             if (gamepad1.b) {
@@ -135,7 +134,7 @@ public class BoomerangTeleop extends LinearOpMode {
                 vertpivot.setPosition(1);
                 vertwrist.setPosition(1);
             }
-                else if (gamepad1.left_bumper) {
+            else if (gamepad1.left_bumper) {
                 targetHorPos = Math.min(hor.getCurrentPosition() + 10, 0);
             } else if (gamepad1.right_bumper) {
                 targetHorPos = Math.max(-250, hor.getCurrentPosition() - 10);
