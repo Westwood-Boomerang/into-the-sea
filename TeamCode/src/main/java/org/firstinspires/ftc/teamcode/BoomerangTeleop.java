@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 /*
+horizontal claw = Servo Axon = horclaw
+horizontal slides extendo = Servo Axon = horext
 
  */
 
@@ -43,10 +45,10 @@ public class BoomerangTeleop extends LinearOpMode {
                 ),
                 x -> x
         );
-        DcMotorEx hor = hardwareMap.get(DcMotorEx.class, "Hor");
         DcMotorEx vert = hardwareMap.get(DcMotorEx.class, "Vert");
-        hor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        DcMotorEx vert2 = hardwareMap.get(DcMotorEx.class, "Vert2");
         vert.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        vert2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         //arm.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0, 0, 0, 0));
         //slides.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0, 0, 0, 0));
 
@@ -54,30 +56,27 @@ public class BoomerangTeleop extends LinearOpMode {
 
         Servo horclaw = hardwareMap.get(Servo.class, "horclaw");
         Servo horwrist1 = hardwareMap.get(Servo.class, "horwrist1");
-        Servo horwrist2 = hardwareMap.get(Servo.class, "horwrist2");
+        //Servo horwrist2 = hardwareMap.get(Servo.class, "horwrist2");
         Servo vertclaw = hardwareMap.get(Servo.class, "vertclaw");
         Servo vertwrist = hardwareMap.get(Servo.class, "vertwrist");
-        Servo horpivot = hardwareMap.get(Servo.class, "horpivot");
+        Servo horext = hardwareMap.get(Servo.class, "horext");
         Servo vertpivot = hardwareMap.get(Servo.class, "vertpivot");
 
 
-        hor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         vert.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        vert2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
 
         int targetVertPos = 0;
-        int targetHorPos = 0;
         double UpPower = 0.4;
         double DownPower = 0.1;
         double CurrPower = 0.0;
-        hor.setTargetPosition(targetHorPos);
-        hor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         vert.setTargetPosition(targetVertPos);
         vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        vert2.setTargetPosition(targetVertPos);
+        vert2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         while (opModeIsActive()) {
-            telemetry.addData("position", hor.getCurrentPosition());
-            telemetry.addData("velocity", hor.getPower());
-            telemetry.addData("targetArm", hor.getTargetPosition());
             telemetry.addData("slide Pos", vert.getCurrentPosition());
             telemetry.addData("slide Pow", vert.getPower());
             telemetry.addData("targetSlides", vert.getTargetPosition());
@@ -108,7 +107,7 @@ public class BoomerangTeleop extends LinearOpMode {
             //programs B button for arm
             if (gamepad1.b) {
                 targetVertPos = 4000;
-                targetHorPos = -250;
+                horext.setPosition(0); //change
 //                wrist.setPosition(1);
 //                claw.setPosition(1);
             }
@@ -116,12 +115,12 @@ public class BoomerangTeleop extends LinearOpMode {
 
             else if (gamepad1.a) {
                 targetVertPos = 0;
-                targetHorPos = 0;
-                horpivot.setPosition(1);
+                 horext.setPosition(0.5); //change
+                horext.setPosition(1);
                 vertpivot.setPosition(0);
                 vertwrist.setPosition(0);
                 horwrist1.setPosition(0);
-                horwrist2.setPosition(1);
+                //horwrist2.setPosition(1);
                 horclaw.setPosition(1);
                 vertclaw.setPosition(0);
 
@@ -135,9 +134,9 @@ public class BoomerangTeleop extends LinearOpMode {
                 vertwrist.setPosition(1);
             }
             else if (gamepad1.left_bumper) {
-                targetHorPos = Math.min(hor.getCurrentPosition() + 10, 0);
+                horext.setPosition(Math.min(horext.getPosition() + .10, 1));
             } else if (gamepad1.right_bumper) {
-                targetHorPos = Math.max(-250, hor.getCurrentPosition() - 10);
+                horext.setPosition(Math.max(0, horext.getPosition() - .10));
             }
 
 
@@ -151,16 +150,14 @@ public class BoomerangTeleop extends LinearOpMode {
                 targetVertPos = Math.max(vert.getCurrentPosition() - 50, 0);
                 CurrPower = DownPower;
             }
-            hor.setTargetPosition(targetHorPos);
-            hor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-            if (targetHorPos != 0) hor.setPower(0.4);
-            else {
-                hor.setPower(0);
-            }
 
             vert.setTargetPosition(targetVertPos);
             vert.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
             vert.setPower(CurrPower);
+
+            vert2.setTargetPosition(targetVertPos);
+            vert2.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            vert2.setPower(CurrPower);
         }
     }
 }
