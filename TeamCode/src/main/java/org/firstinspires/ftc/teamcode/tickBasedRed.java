@@ -52,28 +52,28 @@ public class tickBasedRed extends LinearOpMode {
         if (isStopRequested()) return;
         if (runtime.seconds() < 29.9) {
             if (opModeIsActive()) {
-                drive(0.5, 0.5, 0.5, 0.5, 5, 200, true, 1, true,5000);
-                drive(5, -5, -5, 5, 0, 1, true, 0, true,5000);
+                drive(0.5, 0.5, 0.5, 0.5, 5, 0, 5000);
+                drive(5, -5, -5, 5, 0, 0, 5000);
+                drive(5, -5, -5, 5, 0, 1, 5000);
+
 
 
             }
         }
     }
 
-    public void drive(double flpos, double frpos, double blpos, double brpos, double armPos, double slidePos, boolean clawOpen, double wristPos, boolean isSample, double t) {
+    public void drive(double flpos, double frpos, double blpos, double brpos, double slidePos, int clawOpen,  double t) {
         while (time.seconds() < t && opModeIsActive()) {
             fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             fl.setTargetPosition((int) (tpr * flpos));
             fr.setTargetPosition((int) (tpr * frpos));
             bl.setTargetPosition((int) (tpr * blpos));
             br.setTargetPosition((int) (tpr * brpos));
-            arm.setTargetPosition((int) (tpr * armPos));
             slides.setTargetPosition((int) (tpr * slidePos));
 
 
@@ -81,22 +81,19 @@ public class tickBasedRed extends LinearOpMode {
             fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             fl.setPower(0.5);
             fr.setPower(0.5);
             bl.setPower(0.5);
             br.setPower(0.5);
+            slides.setPower(0.2);
 
-            while (!(arm.getCurrentPosition() == arm.getTargetPosition() &&
-                    slides.getCurrentPosition() == slides.getTargetPosition() &&
-                    fl.getCurrentPosition() == fl.getTargetPosition() &&
-                    isSample && opModeIsActive())){}
-            wrist.setPosition(.3);
-            claw.setPosition(1);
+            while (!(slides.getCurrentPosition() == slides.getTargetPosition() &&
+                    fl.getCurrentPosition() == fl.getTargetPosition() && opModeIsActive())){
+            claw.setPosition(clawOpen);
 
-        }
+        }}
         time.reset();
 
     }
