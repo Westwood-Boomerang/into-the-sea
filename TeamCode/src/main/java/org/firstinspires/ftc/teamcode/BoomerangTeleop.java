@@ -39,21 +39,22 @@ public class BoomerangTeleop extends LinearOpMode {
                 "imu",
                 new IMU.Parameters(
                         new RevHubOrientationOnRobot(
-                                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                                RevHubOrientationOnRobot.LogoFacingDirection.UP,
                                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
                         )
                 ),
                 x -> x
         );
+        /*
         DcMotorEx vert = hardwareMap.get(DcMotorEx.class, "Vert");
         DcMotorEx vert2 = hardwareMap.get(DcMotorEx.class, "Vert2");
         vert.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         vert2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         //arm.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0, 0, 0, 0));
         //slides.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0, 0, 0, 0));
-
+*/
         waitForStart();
-
+/*
         Servo horclaw = hardwareMap.get(Servo.class, "horclaw");
         Servo horwrist1 = hardwareMap.get(Servo.class, "horwrist1");
         //Servo horwrist2 = hardwareMap.get(Servo.class, "horwrist2");
@@ -75,15 +76,15 @@ public class BoomerangTeleop extends LinearOpMode {
         vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         vert2.setTargetPosition(targetVertPos);
         vert2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+        */
         while (opModeIsActive()) {
-            telemetry.addData("slide Pos", vert.getCurrentPosition());
-            telemetry.addData("slide Pow", vert.getPower());
-            telemetry.addData("targetSlides", vert.getTargetPosition());
-            telemetry.update();
+           // telemetry.addData("slide Pos", vert.getCurrentPosition());
+           // telemetry.addData("slide Pow", vert.getPower());
+           // telemetry.addData("targetSlides", vert.getTargetPosition());
+           // telemetry.update();
 
             driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
-
+            /*
             if (gamepad1.dpad_up) {
                 if (vertclaw.getPosition() == 1) horclaw.setPosition(1);
                 else {
@@ -158,6 +159,7 @@ public class BoomerangTeleop extends LinearOpMode {
             vert2.setTargetPosition(targetVertPos);
             vert2.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
             vert2.setPower(CurrPower);
+             */
         }
     }
 }
