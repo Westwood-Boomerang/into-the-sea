@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.subsystems.PIDFcontroller;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -66,6 +67,7 @@ public class BoomerangTeleop extends LinearOpMode {
 
         vert.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         vert2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        vert2.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         int targetVertPos = 0;
