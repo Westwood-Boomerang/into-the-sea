@@ -85,12 +85,12 @@ public class BoomerangTeleop extends LinearOpMode {
             driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
 
             if (gamepad1.dpad_up) {
-                    vertclaw.setPosition(1);
-                }
-             else if (gamepad1.dpad_down) {
+                vertclaw.setPosition(1);
+            }
+            else if (gamepad1.dpad_down) {
 
-                    vertclaw.setPosition(0);
-                }
+                vertclaw.setPosition(0);
+            }
 //            if (gamepad1.dpad_left) {
 //            }
 //            else if (gamepad1.dpad_right) {
