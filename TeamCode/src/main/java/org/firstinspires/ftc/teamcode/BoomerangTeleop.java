@@ -78,10 +78,10 @@ public class BoomerangTeleop extends LinearOpMode {
         vert2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         */
         while (opModeIsActive()) {
-           // telemetry.addData("slide Pos", vert.getCurrentPosition());
-           // telemetry.addData("slide Pow", vert.getPower());
-           // telemetry.addData("targetSlides", vert.getTargetPosition());
-           // telemetry.update();
+            // telemetry.addData("slide Pos", vert.getCurrentPosition());
+            // telemetry.addData("slide Pow", vert.getPower());
+            // telemetry.addData("targetSlides", vert.getTargetPosition());
+            // telemetry.update();
 
             driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
             /*
