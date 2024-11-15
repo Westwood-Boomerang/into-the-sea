@@ -54,13 +54,13 @@ public class BoomerangTeleop extends LinearOpMode {
 
         waitForStart();
 
-        Servo horclaw = hardwareMap.get(Servo.class, "horclaw");
-        Servo horwrist1 = hardwareMap.get(Servo.class, "horwrist1");
+        //Servo horclaw = hardwareMap.get(Servo.class, "horclaw");
+        //Servo horwrist1 = hardwareMap.get(Servo.class, "horwrist1");
         //Servo horwrist2 = hardwareMap.get(Servo.class, "horwrist2");
         Servo vertclaw = hardwareMap.get(Servo.class, "vertclaw");
-        Servo vertwrist = hardwareMap.get(Servo.class, "vertwrist");
-        Servo horext = hardwareMap.get(Servo.class, "horext");
-        Servo vertpivot = hardwareMap.get(Servo.class, "vertpivot");
+        Servo vertwrist1 = hardwareMap.get(Servo.class, "vertwrist");
+        //Servo horext = hardwareMap.get(Servo.class, "horext");
+        //Servo vertpivot = hardwareMap.get(Servo.class, "vertpivot");
 
 
         vert.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -68,8 +68,8 @@ public class BoomerangTeleop extends LinearOpMode {
 
 
         int targetVertPos = 0;
-        double UpPower = 0.4;
-        double DownPower = 0.1;
+        double UpPower = 0.1;
+        double DownPower = 0.05;
         double CurrPower = 0.0;
         vert.setTargetPosition(targetVertPos);
         vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -85,66 +85,43 @@ public class BoomerangTeleop extends LinearOpMode {
             driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
 
             if (gamepad1.dpad_up) {
-                if (vertclaw.getPosition() == 1) horclaw.setPosition(1);
-                else {
                     vertclaw.setPosition(1);
                 }
-            } else if (gamepad1.dpad_down) {
-                if (vertclaw.getPosition() == 0) horclaw.setPosition(0);
-                else {
+             else if (gamepad1.dpad_down) {
+
                     vertclaw.setPosition(0);
                 }
-            }
-            if (gamepad1.dpad_left) {
-                if (horwrist1.getPosition() <= 0.8) {
-                    horwrist1.setPosition(horwrist1.getPosition() + 0.2);
-                }
-            }
-            else if (gamepad1.dpad_right) {
-                if (horwrist1.getPosition() >= 0.2) horwrist1.setPosition(horwrist1.getPosition() + 0.2);
-            }
+//            if (gamepad1.dpad_left) {
+//            }
+//            else if (gamepad1.dpad_right) {
+//
+//            }
             //checks to see if the arm is up. Then brings it down or takes it down.
             //programs B button for arm
-            if (gamepad1.b) {
-                targetVertPos = 4000;
-                horext.setPosition(0); //change
+//            if (gamepad1.b) {
+//                targetVertPos = 4;
 //                wrist.setPosition(1);
 //                claw.setPosition(1);
-            }
+            //}
 
 
             else if (gamepad1.a) {
                 targetVertPos = 0;
-                 horext.setPosition(0.5); //change
-                horext.setPosition(1);
-                vertpivot.setPosition(0);
-                vertwrist.setPosition(0);
-                horwrist1.setPosition(0);
-                //horwrist2.setPosition(1);
-                horclaw.setPosition(1);
+                //vertwrist.setPosition(0);
+
                 vertclaw.setPosition(0);
 
             }
-            else if (gamepad1.x) {
-                vertwrist.setPosition(0);
-                vertpivot.setPosition(0);
-            }
-            else if (gamepad1.y) {
-                vertpivot.setPosition(1);
-                vertwrist.setPosition(1);
-            }
-            else if (gamepad1.left_bumper) {
-                horext.setPosition(Math.min(horext.getPosition() + .10, 1));
-            } else if (gamepad1.right_bumper) {
-                horext.setPosition(Math.max(0, horext.getPosition() - .10));
-            }
-
-
+//            else if (gamepad1.x) {
+//                vertwrist.setPosition(0);
+//
+//            }
+//
 
 
             if (gamepad1.right_trigger >= 0.3) {
                 // TODO: figure out what max slide position is
-                targetVertPos = Math.min(vert.getCurrentPosition() + 50, 4000);
+                targetVertPos = Math.min(vert.getCurrentPosition() + 50, 200);
                 CurrPower = UpPower; // TODO: Someone correct me if I am wrong
             } else if (gamepad1.left_trigger >= 0.3) {
                 targetVertPos = Math.max(vert.getCurrentPosition() - 50, 0);
