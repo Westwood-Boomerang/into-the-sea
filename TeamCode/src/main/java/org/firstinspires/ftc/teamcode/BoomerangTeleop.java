@@ -103,14 +103,18 @@ public class BoomerangTeleop extends LinearOpMode {
             //checks to see if the arm is up. Then brings it down or takes it down.
             //programs B button for arm
             if (gamepad1.b) {
+                // takes it to the side wall height
                 targetVertPos = slideWallPos;
             } else if (gamepad1.a) {
+                // above top bar
                 targetVertPos = topBarSlidePos;
                 vertClaw.setPosition(0.8);
             } else if (gamepad1.x) {
+                // below top bar
                 targetVertPos = topBarSlidePosDown;
                 vertClaw.setPosition(0.8);
             } else if (gamepad1.y) {
+                // bottom
                 targetVertPos = 0;
 
             }

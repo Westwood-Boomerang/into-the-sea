@@ -17,19 +17,15 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 @Config
-@Autonomous
+@Autonomous(preselectTeleOp = "BoomerangTeleop")
 public class tickBasedRed extends LinearOpMode {
     final double tpr = ((((1+((double)46/17))) * (1+((double)46/11))) * 28);
     DcMotorEx fl;
     DcMotorEx fr;
     DcMotorEx bl;
     DcMotorEx br;
-    DcMotorEx arm;
-    Encoder parEnc;
-    Encoder perEnc;
     DcMotorEx vert;
     DcMotorEx vert2;
-    Servo wrist;
     Servo claw;
     ElapsedTime time;
     ElapsedTime runtime;
@@ -65,13 +61,10 @@ public class tickBasedRed extends LinearOpMode {
         waitForStart();
         vert.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         vert2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        vert.setDirection(DcMotorSimple.Direction.REVERSE);
+        ///vert.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         int targetVertPos = 0;
-        double UpPower = 0.4;
-        double DownPower = 0.1;
-        double CurrPower = 0.0;
         vert.setTargetPosition(targetVertPos);
         vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         vert2.setTargetPosition(targetVertPos);
@@ -81,11 +74,11 @@ public class tickBasedRed extends LinearOpMode {
         if (isStopRequested()) return;
         if (runtime.seconds() < 29.9) {
             if (opModeIsActive()) {
-                drive(-1.6, -1.6, -1.6, -1.6, 3085, 0.8, 5000);
-                drive(-1.8, -1.8, -1.8, -1.8,3085, 0.8, 5000);
-                drive(-1.8, -1.8, -1.8, -1.8,2100, 0.8, 5000);
-                drive(-1.8, -1.8, -1.8, -1.8, 2100, 0.2, 5000);
-
+                drive(-1.6, -1.7, -1.6, -1.9, 3100, 0.8, 5000);
+                drive(-1.8, -1.9, -1.8, -2.3,3100, 0.8, 5000);
+                drive(-1.8, -1.9, -1.9, -1.8,2100, 0.8, 5000);
+                drive(-1.8, -1.9, -1.9, -1.8, 2100, 0.2, 5000);
+                drive(-1.4, -1.4, -1.4, -1.4, 400, 0.2, 5000);
 
                 //drive(5, -5, -5, 5, 0, 0, 5000);
                 //drive(5, -5, -5, 5, 0, 1, 5000);
@@ -118,12 +111,12 @@ public class tickBasedRed extends LinearOpMode {
         br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        fl.setPower(0.4);
-        fr.setPower(0.4);
-        bl.setPower(0.4);
-        br.setPower(0.4);
-        vert.setPower(0.2);
-        vert2.setPower(0.2);
+        fl.setPower(0.5);
+        fr.setPower(0.5);
+        bl.setPower(0.5);
+        br.setPower(0.5);
+        vert.setPower(0.5);
+        vert2.setPower(0.5);
 
         while (
                 !(
