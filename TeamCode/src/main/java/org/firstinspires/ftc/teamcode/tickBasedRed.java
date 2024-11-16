@@ -85,6 +85,8 @@ public class tickBasedRed extends LinearOpMode {
                 drive(-1.8, -1.8, -1.8, -1.8,3085, 0.8, 5000);
                 drive(-1.8, -1.8, -1.8, -1.8,2100, 0.8, 5000);
                 drive(-1.8, -1.8, -1.8, -1.8, 2100, 0.2, 5000);
+
+
                 //drive(5, -5, -5, 5, 0, 0, 5000);
                 //drive(5, -5, -5, 5, 0, 1, 5000);
 
@@ -116,10 +118,10 @@ public class tickBasedRed extends LinearOpMode {
         br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        fl.setPower(0.2);
-        fr.setPower(0.2);
-        bl.setPower(0.2);
-        br.setPower(0.2);
+        fl.setPower(0.4);
+        fr.setPower(0.4);
+        bl.setPower(0.4);
+        br.setPower(0.4);
         vert.setPower(0.2);
         vert2.setPower(0.2);
 
