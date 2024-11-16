@@ -53,12 +53,12 @@ public class tickBased extends LinearOpMode {
         rightBack.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
 
-        arm = hardwareMap.get(DcMotorEx.class, "arm");
+        /*arm = hardwareMap.get(DcMotorEx.class, "arm");
         arm.setDirection(DcMotorEx.Direction.FORWARD);
         arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         arm.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        arm.setTargetPosition(0);
+        arm.setTargetPosition(0);*/
 
         slides = hardwareMap.get(DcMotorEx.class, "arm");
         slides.setDirection(DcMotorEx.Direction.FORWARD);
