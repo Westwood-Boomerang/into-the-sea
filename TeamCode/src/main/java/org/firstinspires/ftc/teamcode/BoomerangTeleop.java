@@ -50,25 +50,25 @@ public class BoomerangTeleop extends LinearOpMode {
                 ),
                 x -> x
         );
-
+/*
         DcMotorEx vert = hardwareMap.get(DcMotorEx.class, "Vert");
         DcMotorEx vert2 = hardwareMap.get(DcMotorEx.class, "Vert2");
         vert.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         vert2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         //arm.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0, 0, 0, 0));
         //slides.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0, 0, 0, 0));
-
+*/
         waitForStart();
 
 //        Servo horclaw = hardwareMap.get(Servo.class, "horclaw");
 //        Servo horwrist1 = hardwareMap.get(Servo.class, "horwrist1");
         //Servo horwrist2 = hardwareMap.get(Servo.class, "horwrist2");
-        Servo vertClaw = hardwareMap.get(Servo.class, "vertclaw");
+//        Servo vertClaw = hardwareMap.get(Servo.class, "vertclaw");
 //        Servo vertwrist = hardwareMap.get(Servo.class, "vertwrist");
 //        Servo horext = hardwareMap.get(Servo.class, "horext");
 //        Servo vertpivot = hardwareMap.get(Servo.class, "vertpivot");
 
-
+/*
         vert.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         vert2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         vert.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -84,16 +84,17 @@ public class BoomerangTeleop extends LinearOpMode {
         vert2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         vert.setPower(1);
         vert2.setPower(1);
-
+*/
         while (opModeIsActive()) {
+/*
             telemetry.addData("slide Pos", vert.getCurrentPosition());
             telemetry.addData("slide pos 2", vert2.getCurrentPosition());
             telemetry.addData("slide Pow", vert.getPower());
             telemetry.addData("targetSlides", vert.getTargetPosition());
             telemetry.update();
-
+*/
             driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
-
+/*
             if (gamepad1.dpad_up) {
                 vertClaw.setPosition(0.8);
             } else if (gamepad1.dpad_down) {
@@ -130,6 +131,8 @@ public class BoomerangTeleop extends LinearOpMode {
 
             vert.setTargetPosition(targetVertPos);
             vert2.setTargetPosition(targetVertPos);
+            */
+
         }
     }
 }
