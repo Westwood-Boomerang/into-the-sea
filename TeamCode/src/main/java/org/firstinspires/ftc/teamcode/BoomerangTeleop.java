@@ -40,7 +40,7 @@ public class BoomerangTeleop extends LinearOpMode {
         //init drivetrain
         DriveTrain driveTrain = new DriveTrain(hardwareMap,
                 new String[]{"frontRight", "frontLeft", "backRight", "backLeft"},
-                org.firstinspires.ftc.teamcode.subsystems.DriveTrain.Reverse.RevLeft,
+                DriveTrain.Reverse.RevBackRight,
                 "imu",
                 new IMU.Parameters(
                         new RevHubOrientationOnRobot(
@@ -50,28 +50,29 @@ public class BoomerangTeleop extends LinearOpMode {
                 ),
                 x -> x
         );
-/*
+
         DcMotorEx vert = hardwareMap.get(DcMotorEx.class, "Vert");
         DcMotorEx vert2 = hardwareMap.get(DcMotorEx.class, "Vert2");
         vert.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         vert2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         //arm.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0, 0, 0, 0));
         //slides.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0, 0, 0, 0));
-*/
+
         waitForStart();
 
 //        Servo horclaw = hardwareMap.get(Servo.class, "horclaw");
 //        Servo horwrist1 = hardwareMap.get(Servo.class, "horwrist1");
         //Servo horwrist2 = hardwareMap.get(Servo.class, "horwrist2");
-//        Servo vertClaw = hardwareMap.get(Servo.class, "vertclaw");
+        Servo vertClaw = hardwareMap.get(Servo.class, "vertclaw");
 //        Servo vertwrist = hardwareMap.get(Servo.class, "vertwrist");
 //        Servo horext = hardwareMap.get(Servo.class, "horext");
 //        Servo vertpivot = hardwareMap.get(Servo.class, "vertpivot");
 
-/*
+
         vert.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         vert2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         vert.setDirection(DcMotorSimple.Direction.REVERSE);
+        vert2.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         int targetVertPos = 0;
@@ -84,33 +85,33 @@ public class BoomerangTeleop extends LinearOpMode {
         vert2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         vert.setPower(1);
         vert2.setPower(1);
-*/
+
         while (opModeIsActive()) {
-/*
             telemetry.addData("slide Pos", vert.getCurrentPosition());
             telemetry.addData("slide pos 2", vert2.getCurrentPosition());
             telemetry.addData("slide Pow", vert.getPower());
             telemetry.addData("targetSlides", vert.getTargetPosition());
             telemetry.update();
-*/
+
             driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
-/*
-            if (gamepad1.dpad_up) {
+            if (gamepad1.b) {
+                // close
                 vertClaw.setPosition(0.8);
-            } else if (gamepad1.dpad_down) {
+            } else if (gamepad1.a) {
+                // open
                 vertClaw.setPosition(0.2);
             }
 
             //checks to see if the arm is up. Then brings it down or takes it down.
             //programs B button for arm
-            if (gamepad1.b) {
+            /*if (gamepad1.b) {
                 // takes it to the side wall height
                 targetVertPos = slideWallPos;
             } else if (gamepad1.a) {
                 // above top bar
                 targetVertPos = topBarSlidePos;
                 vertClaw.setPosition(0.8);
-            } else if (gamepad1.x) {
+            } else*/ if (gamepad1.x) {
                 // below top bar
                 targetVertPos = topBarSlidePosDown;
                 vertClaw.setPosition(0.8);
@@ -131,8 +132,6 @@ public class BoomerangTeleop extends LinearOpMode {
 
             vert.setTargetPosition(targetVertPos);
             vert2.setTargetPosition(targetVertPos);
-            */
-
         }
     }
 }

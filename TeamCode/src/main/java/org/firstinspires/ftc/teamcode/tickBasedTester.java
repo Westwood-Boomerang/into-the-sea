@@ -66,7 +66,8 @@ public class tickBasedTester extends LinearOpMode {
         waitForStart();
         vert.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         vert2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        //vert.setDirection(DcMotorSimple.Direction.REVERSE);
+        vert.setDirection(DcMotorSimple.Direction.REVERSE);
+        vert2.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         vert.setPower(0);

@@ -71,7 +71,7 @@ public class BoomerangTeleopRough extends LinearOpMode {
 
         vert.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         vert2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        vert.setDirection(DcMotorSimple.Direction.REVERSE);
+        vert2.setDirection(DcMotorSimple.Direction.REVERSE);vert.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         int targetVertPos = 0;
@@ -92,24 +92,26 @@ public class BoomerangTeleopRough extends LinearOpMode {
             telemetry.addData("targetSlides", vert.getTargetPosition());
             telemetry.update();
 
-            driveTrain.updateRobotCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
+            driveTrain.updateRobotCentric(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
 
-            if (gamepad1.dpad_up) {
+            if (gamepad1.b) {
+                // close
                 vertClaw.setPosition(0.8);
-            } else if (gamepad1.dpad_down) {
+            } else if (gamepad1.a) {
+                // open
                 vertClaw.setPosition(0.2);
             }
 
             //checks to see if the arm is up. Then brings it down or takes it down.
             //programs B button for arm
-            if (gamepad1.b) {
+            /*if (gamepad1.b) {
                 // takes it to the side wall height
                 targetVertPos = slideWallPos;
             } else if (gamepad1.a) {
                 // above top bar
                 targetVertPos = topBarSlidePos;
                 vertClaw.setPosition(0.8);
-            } else if (gamepad1.x) {
+            } else*/if (gamepad1.x) {
                 // below top bar
                 targetVertPos = topBarSlidePosDown;
                 vertClaw.setPosition(0.8);
