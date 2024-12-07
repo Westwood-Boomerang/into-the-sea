@@ -73,7 +73,7 @@ public class newrobotatlastminute extends OpMode {
 
     @Override
     public void loop() {
-        dt();
+        dt2();
         arms();
         telemetry.addData("vert pos", vert.getCurrentPosition());
         telemetry.update();
@@ -83,32 +83,37 @@ public class newrobotatlastminute extends OpMode {
         if (gamepad1.dpad_up) {
             //go up
             ticksToGo = 1000;
-            vert.setPower(0.4);
+            vert.setPower(0.75);
 
         } else if (gamepad1.dpad_down) {
             //go down
             ticksToGo = 0;
-            vert.setPower(-0.4);
+            vert.setPower(-0.75);
         } else {
-            if (Math.abs(vert.getTargetPosition() - ticksToGo) < 15) {
-                //TODO
-            }
+//            if (Math.abs(vert.getTargetPosition() - ticksToGo) < 15) {
+//                //TODO
+//            }
+            vert.setPower(0.1);
         }
         telemetry.addData("vert pos", vert.getCurrentPosition());
         telemetry.addData("vert tar", vert.getTargetPosition());
         vert.setTargetPosition(ticksToGo);
-        vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if (gamepad1.x) {
             arm.setPosition(1);
+            telemetry.addLine("X");
         } else if (gamepad1.y) {
-            arm.setPosition(0);
+            arm.setPosition(0.4);
+            telemetry.addLine("Y");
         }
 
 
         if (gamepad1.a) {
             claw.setPosition(1);
+            telemetry.addLine("A");
         } else if (gamepad1.b) {
             claw.setPosition(0);
+            telemetry.addLine("B");
         }
     }
 
@@ -144,5 +149,28 @@ public class newrobotatlastminute extends OpMode {
         FrontRight.setPower(frontRightPower);
         BackRight.setPower(backRightPower);
 
+    }
+
+    private void dt2() {
+        double forward = -gamepad1.left_stick_y;
+        double strafe = gamepad1.left_stick_x;
+        double turn = gamepad1.right_stick_x;
+
+        double x = strafe *= 1.1;  // Counteract imperfect strafing
+
+        // Denominator is the largest motor power (absolute value) or 1
+        // This ensures all the powers maintain the same ratio,
+        // but only if at least one is out of the range [-1, 1]
+        double denominator = Math.max(Math.abs(forward) + Math.abs(x) + Math.abs(turn), 1);
+        //double denominator = 1;
+        double frontLeftPower = (forward + x + turn) / denominator;
+        double backLeftPower = (forward - x + turn) / denominator;
+        double frontRightPower = (forward - x - turn) / denominator;
+        double backRightPower = (forward + x - turn) / denominator;
+
+        FrontLeft.setPower(frontLeftPower);
+        BackLeft.setPower(backLeftPower);
+        FrontRight.setPower(frontRightPower);
+        BackRight.setPower(backRightPower);
     }
 }
