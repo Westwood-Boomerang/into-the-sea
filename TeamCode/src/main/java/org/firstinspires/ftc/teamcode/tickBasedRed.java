@@ -26,7 +26,8 @@ public class tickBasedRed extends LinearOpMode {
     DcMotorEx br;
     DcMotorEx vert;
     DcMotorEx vert2;
-    Servo claw;
+    Servo vertClaw;
+    Servo extClaw;
     ElapsedTime time;
     ElapsedTime runtime;
     Telemetry tel;
@@ -53,9 +54,9 @@ public class tickBasedRed extends LinearOpMode {
         br = hardwareMap.get(DcMotorEx.class, "backRight");
         br.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         br.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-         vert = hardwareMap.get(DcMotorEx.class, "Vert");
-         vert2 = hardwareMap.get(DcMotorEx.class, "Vert2");
-        claw = hardwareMap.get(Servo.class, "vertclaw");
+        vert = hardwareMap.get(DcMotorEx.class, "Vert");
+        vert2 = hardwareMap.get(DcMotorEx.class, "Vert2");
+        vertClaw = hardwareMap.get(Servo.class, "vertClaw");
         vert.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         vert2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         waitForStart();
@@ -75,31 +76,17 @@ public class tickBasedRed extends LinearOpMode {
         if (isStopRequested()) return;
         if (runtime.seconds() < 29.9) {
             if (opModeIsActive()) {
-                drive(-1.5, -1.4, -1.5, -1.5, 0, 0.8, 5000);
-                drive(-1.9, -1.8, -1.7, -1.7,0, 0.8, 5000);
-                //drive(-1.5, -1.4, -1.5, -1.5, 3100, 0.8, 5000);
-                //drive(-1.9, -1.8, -1.7, -1.7,3100, 0.8, 5000);
-                //drive(-1.8, -1.9, -1.9, -1.8,2100, 0.8, 5000);
-                //drive(-1.8, -1.9, -1.9, -1.8, 2100, 0.2, 5000);
-                //drive(-1.4, -1.4, -1.4, -1.4, 400, 0.2, 5000);
-
-                //drive(5, -5, -5, 5, 0, 0, 5000);
-                //drive(5, -5, -5, 5, 0, 1, 5000);
-
-
-
+                drive(-1.5, -1.4, -1.5, -1.5, 3100, false,5000);
             }
         }
     }
 
-    public void drive(double flpos, double frpos, double blpos, double brpos, int slidePos, double clawOpen,  double t) {
+    public void drive(double flpos, double frpos, double blpos, double brpos, int slidePos, boolean clawOpen, double t) {
+        fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-
-        /*/fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);*/
 
         fl.setTargetPosition((int) (tpr * flpos));
         fr.setTargetPosition((int) (tpr * frpos));
@@ -114,28 +101,35 @@ public class tickBasedRed extends LinearOpMode {
         br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        fl.setPower(0.5);
-        fr.setPower(0.5);
-        bl.setPower(0.5);
-        br.setPower(0.5);
-        vert.setPower(0.5);
-        vert2.setPower(0.5);
+        fl.setPower(0.75);
+        fr.setPower(0.75);
+        bl.setPower(0.75);
+        br.setPower(0.75);
+        vert.setPower(0.75);
+        vert2.setPower(0.75);
 
-        while (
-                !(
-                        Math.abs(vert.getCurrentPosition() - vert.getTargetPosition()) < 5 &&
-                                Math.abs(fl.getCurrentPosition() - fl.getTargetPosition()) < 5
-                ) && opModeIsActive())
+        while (!(Math.abs(vert.getCurrentPosition() - vert.getTargetPosition()) < 5 && Math.abs(fl.getCurrentPosition() - fl.getTargetPosition()) < 5) && opModeIsActive())
         {
-            claw.setPosition(clawOpen);
             tel.addData("par", fl.getCurrentPosition());
             tel.addData("per", br.getCurrentPosition());
             tel.addData("slide", vert.getCurrentPosition());
             tel.addData("slide2", vert2.getCurrentPosition());
+            tel.addData("claw open", clawOpen);
             tel.update();
         }
 
         time.reset();
-
+        fl.setPower(0);
+        fr.setPower(0);
+        bl.setPower(0);
+        br.setPower(0);
+        vert.setPower(0);
+        vert2.setPower(0);
+        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        vert.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        vert2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
