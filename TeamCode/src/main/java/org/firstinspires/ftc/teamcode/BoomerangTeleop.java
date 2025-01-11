@@ -60,6 +60,8 @@ public class BoomerangTeleop extends LinearOpMode {
 
         Servo extClaw = hardwareMap.get(Servo.class, "extClaw");
         Servo wrist1 = hardwareMap.get(Servo.class, "wrist1");
+        Servo bucket1 = hardwareMap.get(Servo.class, "bucket1");
+        Servo bucket2 = hardwareMap.get(Servo.class, "bucket2");
 //      Servo wrist2 = hardwareMap.get(Servo.class, "wrist2");
         Servo ext1 = hardwareMap.get(Servo.class, "ext1");
         Servo ext2 = hardwareMap.get(Servo.class, "ext2");
@@ -158,7 +160,13 @@ public class BoomerangTeleop extends LinearOpMode {
                 extendoState = "bucket";
 
             }
-
+            if (gamepad1.dpad_left) {
+                bucket1.setPosition(0);
+                bucket2.setPosition(0);
+            } else if (gamepad1.dpad_right) {
+                bucket1.setPosition(1);
+                bucket2.setPosition(1);
+            }
             vert.setTargetPosition(targetVertPos);
             vert2.setTargetPosition(targetVertPos);
         }
