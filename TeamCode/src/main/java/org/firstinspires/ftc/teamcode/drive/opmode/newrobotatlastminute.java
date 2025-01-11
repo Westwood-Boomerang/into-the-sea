@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
-import android.provider.ContactsContract;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -12,14 +11,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 
 @TeleOp(name = "newrobotatlastminute")
 public class newrobotatlastminute extends OpMode {
-    DcMotorEx FrontRight, FrontLeft, BackRight;
-    CRServo BackLeft;
+    DcMotorEx FrontRight, FrontLeft, BackRight, BackLeft;
     IMU imu;
     DcMotorEx vert;
     Servo claw, arm;
@@ -31,7 +27,7 @@ public class newrobotatlastminute extends OpMode {
             FrontRight = hardwareMap.get(DcMotorEx.class, "FrontRight");
             FrontLeft = hardwareMap.get(DcMotorEx.class, "FrontLeft");
             BackRight = hardwareMap.get(DcMotorEx.class, "BackRight");
-            BackLeft = hardwareMap.get(CRServo.class, "BackLeft");
+            BackLeft = hardwareMap.get(DcMotorEx.class, "BackLeft");
 
             FrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
             BackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -54,12 +50,6 @@ public class newrobotatlastminute extends OpMode {
                 Exception err) {
             telemetry.addLine("Failed to instantiate drivetrain. Error message: " + err.getMessage());
         }
-        try {
-            vert = hardwareMap.get(DcMotorEx.class, "Vert");
-        } catch (
-                Exception err) {
-            telemetry.addLine("Failed to instantiate slides. Error message: " + err.getMessage());
-        }
 
         try {
             arm = hardwareMap.get(Servo.class, "Arm");
@@ -73,10 +63,10 @@ public class newrobotatlastminute extends OpMode {
 
     @Override
     public void loop() {
-        dt2();
-        arms();
-        telemetry.addData("vert pos", vert.getCurrentPosition());
-        telemetry.update();
+        //dt();
+        //arms();
+        //telemetry.addData("vert pos", vert.getCurrentPosition());
+        //telemetry.update();
     }
 
     private void arms() {
@@ -139,10 +129,10 @@ public class newrobotatlastminute extends OpMode {
         // but only if at least one is out of the range [-1, 1]
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(turn), 1);
         //double denominator = 1;
-        double frontLeftPower = (rotY + rotX + turn) / denominator;
+        double frontLeftPower = 0.8 * (rotY + rotX + turn) / denominator;
         double backLeftPower = (rotY - rotX + turn) / denominator;
-        double frontRightPower = (rotY - rotX - turn) / denominator;
-        double backRightPower = (rotY + rotX - turn) / denominator;
+        double frontRightPower = 0.8 * (rotY - rotX - turn) / denominator;
+        double backRightPower = 0.8 * (rotY + rotX - turn) / denominator;
 
         FrontLeft.setPower(frontLeftPower);
         BackLeft.setPower(backLeftPower);

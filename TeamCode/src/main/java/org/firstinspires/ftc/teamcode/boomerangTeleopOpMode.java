@@ -38,8 +38,7 @@ public class boomerangTeleopOpMode extends OpMode {
                                     RevHubOrientationOnRobot.LogoFacingDirection.UP,
                                     RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
                             )
-                    ),
-                    x -> 0.7 * x
+                    )
             );
         } catch (Exception err) {
             telemetry.addLine("Failed to instantiate drivetrain. Error message: " + err.getMessage());
