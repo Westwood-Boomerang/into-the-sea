@@ -1,18 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 /*
-TODO: FIX RETURN STRING IT LITERALLY SNAPPED
-- Done
-
-TODO: ADD CLAW ITEMS
-- ritvij has been working on the claw for 1 hour...
-- what now?
-
-
-TODO: Get rid of my crappy subsystems
-- after first comp
-
-TODO: better macros w/ claw
-TODO: Tune RR
+horizontal claw = Servo Axon = horclaw
+horizontal slides extendo = Servo Axon = horext
 
  */
 
@@ -30,6 +19,7 @@ import org.firstinspires.ftc.teamcode.subsystems.PIDFcontroller;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -40,115 +30,108 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 @TeleOp(name = "BoomerangTeleop")
 public class BoomerangTeleop extends LinearOpMode {
+    public static int maxSlidesPos = 4000;
+    public static int slideWallPos = 400;
+    public static int topBarSlidePos = 3085;
+    public static int topBarSlidePosDown = 2100;
     @Override
     public void runOpMode() {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         //init drivetrain
         DriveTrain driveTrain = new DriveTrain(hardwareMap,
                 new String[]{"frontRight", "frontLeft", "backRight", "backLeft"},
-                org.firstinspires.ftc.teamcode.subsystems.DriveTrain.Reverse.RevLeft,
+                DriveTrain.Reverse.RevRight,
                 "imu",
                 new IMU.Parameters(
                         new RevHubOrientationOnRobot(
-                                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                                RevHubOrientationOnRobot.LogoFacingDirection.UP,
                                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
                         )
                 ),
                 x -> x
         );
-        DcMotorEx arm = hardwareMap.get(DcMotorEx.class, "Arm");
-        DcMotorEx slides = hardwareMap.get(DcMotorEx.class, "Slides");
-        arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        slides.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        DcMotorEx vert = hardwareMap.get(DcMotorEx.class, "Vert");
+        DcMotorEx vert2 = hardwareMap.get(DcMotorEx.class, "Vert2");
+        vert.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        vert2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         //arm.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0, 0, 0, 0));
         //slides.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(0, 0, 0, 0));
 
         waitForStart();
 
-        Servo claw = hardwareMap.get(Servo.class, "claw");
-        Servo wrist = hardwareMap.get(Servo.class, "wrist");
+//        Servo horclaw = hardwareMap.get(Servo.class, "horclaw");
+//        Servo horwrist1 = hardwareMap.get(Servo.class, "horwrist1");
+        //Servo horwrist2 = hardwareMap.get(Servo.class, "horwrist2");
+        Servo vertClaw = hardwareMap.get(Servo.class, "vertclaw");
+//        Servo vertwrist = hardwareMap.get(Servo.class, "vertwrist");
+//        Servo horext = hardwareMap.get(Servo.class, "horext");
+//        Servo vertpivot = hardwareMap.get(Servo.class, "vertpivot");
 
-        arm.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        slides.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-        int targetSlidePos = 0;
-        int targetArmPos = 0;
-        double UpPower = 0.3;
-        double DownPower = 0.3;
+        vert.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        vert2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        vert.setDirection(DcMotorSimple.Direction.REVERSE);
+        vert2.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+        int targetVertPos = 0;
+        double UpPower = 0.4;
+        double DownPower = 0.1;
         double CurrPower = 0.0;
-        arm.setTargetPosition(targetArmPos);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slides.setTargetPosition(targetSlidePos);
-        slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        vert.setTargetPosition(targetVertPos);
+        vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        vert2.setTargetPosition(targetVertPos);
+        vert2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        vert.setPower(1);
+        vert2.setPower(1);
 
         while (opModeIsActive()) {
-            telemetry.addData("position", arm.getCurrentPosition());
-            telemetry.addData("velocity", arm.getPower());
-            telemetry.addData("targetArm", arm.getTargetPosition());
-            telemetry.addData("slide Pos", slides.getCurrentPosition());
-            telemetry.addData("slide Pow", slides.getPower());
-            telemetry.addData("targetSlides", slides.getTargetPosition());
-            telemetry.addData("w", wrist.getPosition());
-            telemetry.addData("c", claw.getPosition());
+            telemetry.addData("slide Pos", vert.getCurrentPosition());
+            telemetry.addData("slide pos 2", vert2.getCurrentPosition());
+            telemetry.addData("slide Pow", vert.getPower());
+            telemetry.addData("targetSlides", vert.getTargetPosition());
             telemetry.update();
 
-            driveTrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
+            driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
+            if (gamepad1.b) {
+                // close
+                vertClaw.setPosition(0.8);
+            } else if (gamepad1.a) {
+                // open
+                vertClaw.setPosition(0.2);
+            }
 
             //checks to see if the arm is up. Then brings it down or takes it down.
             //programs B button for arm
-            if (gamepad1.b) {
-                targetSlidePos = 4000;
-                targetArmPos = 1736;
-                wrist.setPosition(1);
-                claw.setPosition(1);
+            /*if (gamepad1.b) {
+                // takes it to the side wall height
+                targetVertPos = slideWallPos;
             } else if (gamepad1.a) {
-                targetSlidePos = 0;
-                targetArmPos = 0;
-                //currentArmPos = arm.getCurrentPosition();
-            } else if (gamepad1.x) {
-                targetSlidePos = 4000;
-                targetArmPos = 0;
-                claw.setPosition(1);
-            } else if (gamepad1.left_bumper) {
-                targetArmPos = Math.max(arm.getCurrentPosition() - 100, 0);
-            } else if (gamepad1.right_bumper) {
-                targetArmPos = Math.min(1736, arm.getCurrentPosition() + 100);
+                // above top bar
+                targetVertPos = topBarSlidePos;
+                vertClaw.setPosition(0.8);
+            } else*/ if (gamepad1.x) {
+                // below top bar
+                targetVertPos = topBarSlidePosDown;
+                vertClaw.setPosition(0.8);
+            } else if (gamepad1.y) {
+                // bottom
+                targetVertPos = 0;
+
             }
 
-            arm.setTargetPosition(targetArmPos);
-            // TODO: adjustpower - need more power on way up and when closer to horizontal (math.cos or smth)
-            // we don't need very much power at the top
-            /*if (arm.getCurrentPosition() >= arm.getTargetPosition()) {
-                arm.setPower(0.75 * Math.cos((Math.PI / 600) * arm.getCurrentPosition()));
-            } else if (arm.getCurrentPosition() >= arm.getTargetPosition()) {
-                arm.setPower(0.75 * Math.cos((Math.PI / 600) * arm.getCurrentPosition()));
-            }*/
-            arm.setPower(0.75);
-            arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
             if (gamepad1.right_trigger >= 0.3) {
                 // TODO: figure out what max slide position is
-                targetSlidePos = Math.min(slides.getCurrentPosition() + 50, 4000);
+                targetVertPos = Math.min(vert.getCurrentPosition() + 200, maxSlidesPos);
                 CurrPower = UpPower; // TODO: Someone correct me if I am wrong
             } else if (gamepad1.left_trigger >= 0.3) {
-                targetSlidePos = Math.max(slides.getCurrentPosition() - 50, 0);
+                targetVertPos = Math.max(vert.getCurrentPosition() - 200, 0);
                 CurrPower = DownPower;
             }
 
-            if (gamepad1.dpad_up) {
-                claw.setPosition(1);
-            } else if (gamepad1.dpad_down) {
-                claw.setPosition(0);
-            }
-
-            if (gamepad1.dpad_left) {
-                wrist.setPosition(wrist.getPosition()+0.1);
-            } else if (gamepad1.dpad_right) {
-                wrist.setPosition(wrist.getPosition()-0.1);
-            }
-            slides.setTargetPosition(targetSlidePos);
-
-            slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-            slides.setPower(CurrPower);
+            vert.setTargetPosition(targetVertPos);
+            vert2.setTargetPosition(targetVertPos);
         }
     }
 }
