@@ -13,8 +13,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
-import org.firstinspires.ftc.teamcode.subsystems.LinearSlide;
-import org.firstinspires.ftc.teamcode.subsystems.PIDFcontroller;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -60,13 +58,13 @@ public class BoomerangTeleop extends LinearOpMode {
 
         waitForStart();
 
-//        Servo horclaw = hardwareMap.get(Servo.class, "horclaw");
-//        Servo horwrist1 = hardwareMap.get(Servo.class, "horwrist1");
-        //Servo horwrist2 = hardwareMap.get(Servo.class, "horwrist2");
-        Servo vertClaw = hardwareMap.get(Servo.class, "vertclaw");
-//        Servo vertwrist = hardwareMap.get(Servo.class, "vertwrist");
-//        Servo horext = hardwareMap.get(Servo.class, "horext");
-//        Servo vertpivot = hardwareMap.get(Servo.class, "vertpivot");
+        Servo extClaw = hardwareMap.get(Servo.class, "extClaw");
+        Servo wrist1 = hardwareMap.get(Servo.class, "wrist1");
+//      Servo wrist2 = hardwareMap.get(Servo.class, "wrist2");
+        Servo ext1 = hardwareMap.get(Servo.class, "ext1");
+        Servo ext2 = hardwareMap.get(Servo.class, "ext2");
+        Servo vertClaw = hardwareMap.get(Servo.class, "vertClaw");
+
 
 
         vert.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -79,6 +77,7 @@ public class BoomerangTeleop extends LinearOpMode {
         double UpPower = 0.4;
         double DownPower = 0.1;
         double CurrPower = 0.0;
+        String extendoState = "bucket";
         vert.setTargetPosition(targetVertPos);
         vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         vert2.setTargetPosition(targetVertPos);
@@ -104,21 +103,20 @@ public class BoomerangTeleop extends LinearOpMode {
 
             //checks to see if the arm is up. Then brings it down or takes it down.
             //programs B button for arm
-            /*if (gamepad1.b) {
+            if (gamepad1.b) {
                 // takes it to the side wall height
                 targetVertPos = slideWallPos;
             } else if (gamepad1.a) {
-                // above top bar
+                // just above top bar
                 targetVertPos = topBarSlidePos;
                 vertClaw.setPosition(0.8);
-            } else*/ if (gamepad1.x) {
-                // below top bar
+            } else if (gamepad1.x) {
+                // below top bar, goes down & lets go of spec
                 targetVertPos = topBarSlidePosDown;
-                vertClaw.setPosition(0.8);
+                vertClaw.setPosition(0.2);
             } else if (gamepad1.y) {
                 // bottom
                 targetVertPos = 0;
-
             }
 
             if (gamepad1.right_trigger >= 0.3) {
@@ -128,6 +126,36 @@ public class BoomerangTeleop extends LinearOpMode {
             } else if (gamepad1.left_trigger >= 0.3) {
                 targetVertPos = Math.max(vert.getCurrentPosition() - 200, 0);
                 CurrPower = DownPower;
+            }
+
+            //TODO: fix this up
+            if (gamepad1.dpad_up && !extendoState.equals("extending") && !extendoState.equals("extended")) {
+                extendoState = "extending";
+                ext1.setPosition(1);
+                ext2.setPosition(1);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+                wrist1.setPosition(1);
+                extendoState = "extended";
+            } else if (gamepad1.dpad_down && !extendoState.equals("comingBack") && !extendoState.equals("bucket")) {
+                extendoState = "comingBack";
+                extClaw.setPosition(0);
+                wrist1.setPosition(0);
+                ext1.setPosition(0);
+                ext2.setPosition(0);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+                extClaw.setPosition(1);
+                extendoState = "bucket";
+
             }
 
             vert.setTargetPosition(targetVertPos);

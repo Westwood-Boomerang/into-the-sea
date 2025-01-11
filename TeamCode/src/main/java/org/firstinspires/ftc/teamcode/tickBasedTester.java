@@ -55,7 +55,7 @@ public class tickBasedTester extends LinearOpMode {
         br.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         vert = hardwareMap.get(DcMotorEx.class, "Vert");
         vert2 = hardwareMap.get(DcMotorEx.class, "Vert2");
-        claw = hardwareMap.get(Servo.class, "vertclaw");
+        claw = hardwareMap.get(Servo.class, "vertClaw");
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
