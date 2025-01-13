@@ -44,11 +44,12 @@ public class BoomerangTeleopOpMode extends OpMode {
     DcMotorEx vert2;
     Servo bucket1;
     Servo bucket2;
-    Servo claw;
+    Servo specClaw;
     Servo rotater; //Send help
     Servo axonrotater; // I need help
     Servo extendo1;
     Servo extendo2;
+    Servo extClaw;
     Servo wrist1;
     Servo wrist2;
     Servo wrist3;
@@ -56,6 +57,8 @@ public class BoomerangTeleopOpMode extends OpMode {
     ElapsedTime time;
 
     boolean bucketOut = false;
+    boolean extClawOpen = false;
+    boolean specClawOpen = false;
 
     CurrentState state = CurrentState.Base;
     @Override
@@ -107,7 +110,8 @@ public class BoomerangTeleopOpMode extends OpMode {
         }
 
         try {
-            claw = hardwareMap.get(Servo.class, "vertClaw");
+            specClaw = hardwareMap.get(Servo.class, "vertClaw");
+            extClaw = hardwareMap.get(Servo.class, "extClaw");
             //claw.setDirection(Servo.Direction.REVERSE);
         } catch (Exception err){
             t.addLine("Failed in instantiate the claw. Error Message: " + err.getMessage());
@@ -121,7 +125,7 @@ public class BoomerangTeleopOpMode extends OpMode {
         }
 
        try {
-           extendo1 = hardwareMap.get(Servo.class, "extendoLeft");
+           //extendo1 = hardwareMap.get(Servo.class, "extendoLeft");
            extendo2 = hardwareMap.get(Servo.class, "extendoRight");
 
        } catch (Exception err){
@@ -129,7 +133,7 @@ public class BoomerangTeleopOpMode extends OpMode {
        }
         try {
             //extendo1 = hardwareMap.get(Servo.class, "extendo1");
-            wrist1 = hardwareMap.get(Servo.class, "wrist1");
+            //wrist1 = hardwareMap.get(Servo.class, "wrist1");
             wrist2 = hardwareMap.get(Servo.class, "wrist2");
             wrist3 = hardwareMap.get(Servo.class, "wrist3");
         } catch (Exception err){
@@ -150,9 +154,30 @@ public class BoomerangTeleopOpMode extends OpMode {
 
         driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
 
+        if (gamepad2.a) {
+            specClawOpen = !specClawOpen;
+            specClaw.setPosition(specClawOpen ? 0 : 1);
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (gamepad2.y) {
+            extClawOpen = !extClawOpen;
+            extClaw.setPosition(extClawOpen ? 0 : 1);
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         if (state == CurrentState.Base) {
+            extendo2.setPosition(-1);
             if (gamepad1.right_bumper) {
-                extendo1.setPosition(1);
+                extendo2.setPosition(1);
                 time.reset();
                 state = CurrentState.ExtendoExtending;
             } else if (gamepad2.left_bumper) {
@@ -164,16 +189,16 @@ public class BoomerangTeleopOpMode extends OpMode {
                 state = CurrentState.SlidesMoveUp;
             }
         } else if (state == CurrentState.ExtendoExtending) {
-            if (time.milliseconds() >= 500) {
+            if (time.milliseconds() >= 1500) {
                 // TODO: tune these
-                wrist1.setPosition(1);
-                wrist2.setPosition(1);
-                wrist3.setPosition(1);
+                //wrist1.setPosition(1);
+                wrist2.setPosition(0);
+                //wrist3.setPosition(1);
                 time.reset();
                 state = CurrentState.AlignClawGoldilocks;
             }
         } else if (state == CurrentState.ExtendoRetracting) {
-            if (time.milliseconds() >= 500) {
+            if (time.milliseconds() >= 1500) {
                 state = CurrentState.Base;
             }
         } else if (state == CurrentState.AlignClawGoldilocks) {
@@ -182,16 +207,16 @@ public class BoomerangTeleopOpMode extends OpMode {
             }
         } else if (state == CurrentState.AlignClawBase) {
             if (time.milliseconds() > 500) {
-                extendo1.setPosition(0);
+                extendo2.setPosition(-1);
                 time.reset();
                 state = CurrentState.ExtendoRetracting;
             }
         } else if (state == CurrentState.ExtendoOut) {
             if (gamepad1.left_bumper) {
                 // TODO: tune these
-                wrist1.setPosition(0);
-                wrist2.setPosition(0);
-                wrist3.setPosition(0);
+                //wrist1.setPosition(0);
+                wrist2.setPosition(0.5);
+                //wrist3.setPosition(0);
                 time.reset();
                 state = CurrentState.AlignClawBase;
             }
@@ -209,6 +234,8 @@ public class BoomerangTeleopOpMode extends OpMode {
             }
         } else if (state == CurrentState.SlidesTop) {
             if (gamepad2.left_bumper) {
+                vert.setPower(0.5);
+                vert2.setPower(0.5);
                 vert.setTargetPosition(0);
                 vert2.setTargetPosition(0);
                 state = CurrentState.SlidesMoveDown;
