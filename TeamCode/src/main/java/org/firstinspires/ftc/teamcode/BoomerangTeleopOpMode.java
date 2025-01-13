@@ -22,6 +22,7 @@ enum CurrentState {
     Base,
     //ExtendoExtending,
     AlignClawGoldilocks,
+    AlignClawBase,
     ExtendoExtending,
     ExtendoRetracting,
     ExtendoOut,
@@ -48,7 +49,9 @@ public class BoomerangTeleopOpMode extends OpMode {
     Servo axonrotater; // I need help
     Servo extendo1;
     Servo extendo2;
-    Servo wrist;
+    Servo wrist1;
+    Servo wrist2;
+    Servo wrist3;
     Telemetry t;
     ElapsedTime time;
 
@@ -126,8 +129,9 @@ public class BoomerangTeleopOpMode extends OpMode {
        }
         try {
             //extendo1 = hardwareMap.get(Servo.class, "extendo1");
-            wrist = hardwareMap.get(Servo.class, "wrist2");
-
+            wrist1 = hardwareMap.get(Servo.class, "wrist1");
+            wrist2 = hardwareMap.get(Servo.class, "wrist2");
+            wrist3 = hardwareMap.get(Servo.class, "wrist3");
         } catch (Exception err){
             t.addLine("Failed to instantiate the wrist. Error message: " + err.getMessage());
         }
@@ -161,7 +165,10 @@ public class BoomerangTeleopOpMode extends OpMode {
             }
         } else if (state == CurrentState.ExtendoExtending) {
             if (time.milliseconds() >= 500) {
-                wrist.setPosition(1);
+                // TODO: tune these
+                wrist1.setPosition(1);
+                wrist2.setPosition(1);
+                wrist3.setPosition(1);
                 time.reset();
                 state = CurrentState.AlignClawGoldilocks;
             }
@@ -173,11 +180,20 @@ public class BoomerangTeleopOpMode extends OpMode {
             if (time.milliseconds() >= 500) {
                 state = CurrentState.ExtendoOut;
             }
-        } else if (state == CurrentState.ExtendoOut) {
-            if (gamepad1.left_bumper) {
+        } else if (state == CurrentState.AlignClawBase) {
+            if (time.milliseconds() > 500) {
                 extendo1.setPosition(0);
                 time.reset();
                 state = CurrentState.ExtendoRetracting;
+            }
+        } else if (state == CurrentState.ExtendoOut) {
+            if (gamepad1.left_bumper) {
+                // TODO: tune these
+                wrist1.setPosition(0);
+                wrist2.setPosition(0);
+                wrist3.setPosition(0);
+                time.reset();
+                state = CurrentState.AlignClawBase;
             }
         } else if (state == CurrentState.SlidesMoveUp) {
             if (Math.abs(vert.getCurrentPosition() - vert.getTargetPosition()) < 10) {
