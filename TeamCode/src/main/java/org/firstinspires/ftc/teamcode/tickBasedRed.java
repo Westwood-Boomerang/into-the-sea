@@ -28,7 +28,6 @@ public class tickBasedRed extends LinearOpMode {
     DcMotorEx vert2;
     Servo claw;
     ElapsedTime time;
-    ElapsedTime runtime;
     Telemetry tel;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -53,9 +52,9 @@ public class tickBasedRed extends LinearOpMode {
         br = hardwareMap.get(DcMotorEx.class, "backRight");
         br.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         br.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-         vert = hardwareMap.get(DcMotorEx.class, "Vert");
-         vert2 = hardwareMap.get(DcMotorEx.class, "Vert2");
-        claw = hardwareMap.get(Servo.class, "vertclaw");
+        vert = hardwareMap.get(DcMotorEx.class, "Vert");
+        vert2 = hardwareMap.get(DcMotorEx.class, "Vert2");
+        claw = hardwareMap.get(Servo.class, "vertClaw");
         vert.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         vert2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         waitForStart();
@@ -63,7 +62,6 @@ public class tickBasedRed extends LinearOpMode {
         vert2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         vert.setDirection(DcMotorSimple.Direction.REVERSE);
         vert2.setDirection(DcMotorSimple.Direction.REVERSE);
-
 
         int targetVertPos = 0;
         vert.setTargetPosition(targetVertPos);
@@ -73,33 +71,21 @@ public class tickBasedRed extends LinearOpMode {
         vert.setPower(1);
         vert2.setPower(1);
         if (isStopRequested()) return;
-        if (runtime.seconds() < 29.9) {
-            if (opModeIsActive()) {
-                drive(-1.5, -1.4, -1.5, -1.5, 0, 0.8, 5000);
-                drive(-1.9, -1.8, -1.7, -1.7,0, 0.8, 5000);
-                //drive(-1.5, -1.4, -1.5, -1.5, 3100, 0.8, 5000);
-                //drive(-1.9, -1.8, -1.7, -1.7,3100, 0.8, 5000);
-                //drive(-1.8, -1.9, -1.9, -1.8,2100, 0.8, 5000);
-                //drive(-1.8, -1.9, -1.9, -1.8, 2100, 0.2, 5000);
-                //drive(-1.4, -1.4, -1.4, -1.4, 400, 0.2, 5000);
-
-                //drive(5, -5, -5, 5, 0, 0, 5000);
-                //drive(5, -5, -5, 5, 0, 1, 5000);
-
-
-
-            }
+        if (opModeIsActive()) {
+            drive(-1.5, -1.4, -1.4, -1.9, 3000, false, 5000);
+            drive(-0.5, -2.5, 1.7, -6.1, 1000, true, 5000);
+            drive(0.6, 3.1, -1.2, 6.6, 3000, false, 5000);
         }
     }
 
-    public void drive(double flpos, double frpos, double blpos, double brpos, int slidePos, double clawOpen,  double t) {
+    public void drive(double flpos, double frpos, double blpos, double brpos, int slidePos, boolean clawOpen,  double t) {
+        time.reset();
 
-
-        /*/fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);*/
+        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         fl.setTargetPosition((int) (tpr * flpos));
         fr.setTargetPosition((int) (tpr * frpos));
@@ -113,28 +99,30 @@ public class tickBasedRed extends LinearOpMode {
         bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        
 
-        fl.setPower(0.5);
-        fr.setPower(0.5);
-        bl.setPower(0.5);
-        br.setPower(0.5);
-        vert.setPower(0.5);
-        vert2.setPower(0.5);
-
-        while (
-                !(
-                        Math.abs(vert.getCurrentPosition() - vert.getTargetPosition()) < 5 &&
-                                Math.abs(fl.getCurrentPosition() - fl.getTargetPosition()) < 5
-                ) && opModeIsActive())
+        while (opModeIsActive() && time.get&& Math.abs(fl.getCurrentPosition() - fl.getTargetPosition()) / tpr > 0.05 && Math.abs(fl.getCurrentPosition() - br.getTargetPosition()) / tpr > 0.05 && Math.abs(vert.getCurrentPosition() - arm.getTargetPosition()) / tpr > 0.05)
         {
-            claw.setPosition(clawOpen);
+            if (clawOpen == false) claw.setPosition(1);
+            else claw.setPosition(0);
+            fl.setPower(0.75);
+            fr.setPower(0.75);
+            bl.setPower(0.75);
+            br.setPower(0.75);
+            vert.setPower(0.5);
+            vert2.setPower(0.5);
             tel.addData("par", fl.getCurrentPosition());
             tel.addData("per", br.getCurrentPosition());
             tel.addData("slide", vert.getCurrentPosition());
             tel.addData("slide2", vert2.getCurrentPosition());
             tel.update();
         }
-
+        fl.setPower(0);
+        fr.setPower(0);
+        bl.setPower(0);
+        br.setPower(0);
+        vert.setPower(0);
+        vert2.setPower(0);
         time.reset();
 
     }
