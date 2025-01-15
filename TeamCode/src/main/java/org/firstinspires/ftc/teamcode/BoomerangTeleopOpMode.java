@@ -74,6 +74,8 @@ public class BoomerangTeleopOpMode extends OpMode {
 
     double currentWristOffset = 0;
 
+    int targetVertPos = 0;
+
     CurrentState state = CurrentState.Base;
     @Override
     public void init() {
@@ -84,7 +86,7 @@ public class BoomerangTeleopOpMode extends OpMode {
         try {
             driveTrain = new DriveTrain(hardwareMap,
                     new String[]{"frontRight", "frontLeft", "backRight", "backLeft"},
-                    org.firstinspires.ftc.teamcode.subsystems.DriveTrain.Reverse.RevLeft,
+                    org.firstinspires.ftc.teamcode.subsystems.DriveTrain.Reverse.RevRight,
                     "imu",
                     new IMU.Parameters(
                             new RevHubOrientationOnRobot(
@@ -129,7 +131,7 @@ public class BoomerangTeleopOpMode extends OpMode {
             extClaw = hardwareMap.get(Servo.class, "extClaw");
             //claw.setDirection(Servo.Direction.REVERSE);
         } catch (Exception err){
-            t.addLine("Failed in instantiate the claw. Error Message: " + err.getMessage());
+            t.addLine("Failed in instantiate the claws. Error Message: " + err.getMessage());
         }
 
        try {
@@ -163,19 +165,45 @@ public class BoomerangTeleopOpMode extends OpMode {
 
         driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
 
-        if (gamepad2.a && debounce.milliseconds() > 500) {
+        if (gamepad1.b && debounce.milliseconds() > 500) {
             specClawOpen = !specClawOpen;
             specClaw.setPosition(specClawOpen ? 0 : 1);
             debounce.reset();
         }
 
-        if (gamepad2.y&& debounce.milliseconds() > 500) {
+        if (gamepad1.right_trigger > 0.3) {
+            vert.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            vert.setTargetPosition(Math.max(vert.getCurrentPosition() + 200, 2700));
+            vert.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            vert2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            vert2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            vert2.setTargetPosition(Math.max(vert.getCurrentPosition() + 200, 2700));
+            vert2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            vert2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        } else if (gamepad1.left_trigger > 0.3) {
+            vert.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            vert.setTargetPosition(Math.max(vert.getCurrentPosition() - 200, 0));
+            vert.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            vert2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            vert2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            vert2.setTargetPosition(Math.max(vert.getCurrentPosition() - 200, 0));
+            vert2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            vert2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        if (gamepad2.b && debounce.milliseconds() > 500) {
             extClawOpen = !extClawOpen;
             extClaw.setPosition(extClawOpen ? 0 : 1);
             debounce.reset();
         }
 
-        if (gamepad2.b && debounce.milliseconds() > 500) {
+        if (gamepad2.y && debounce.milliseconds() > 500) {
             bucketOut = !bucketOut;
             bucket1.setPosition(bucketOut ? bucket1Out : bucket1In);
             bucket2.setPosition(bucketOut ? bucket2Out : bucket2In);
@@ -187,11 +215,10 @@ public class BoomerangTeleopOpMode extends OpMode {
                 wrist2.setPosition(wrist2In);
                 wrist1.setPosition(wrist1In);
                 if (gamepad1.right_bumper) {
-
                     time.reset();
                     extendo2.setPosition(extendoOut);
                     state = CurrentState.ExtendoExtending;
-                } else if (gamepad2.left_bumper) {
+                } else if (gamepad2.a) {
                     // move up
                     extendo2.setPosition(extendoMid);
                     state = CurrentState.SlidesMoveUp;

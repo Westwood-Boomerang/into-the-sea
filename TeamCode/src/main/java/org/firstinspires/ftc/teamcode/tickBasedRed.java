@@ -68,13 +68,14 @@ public class tickBasedRed extends LinearOpMode {
         vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         vert2.setTargetPosition(targetVertPos);
         vert2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        vert.setPower(1);
-        vert2.setPower(1);
+        vert.setPower(0.5);
+        vert2.setPower(0.5);
         if (isStopRequested()) return;
         if (opModeIsActive()) {
-            drive(-1.5, -1.4, -1.4, -1.9, 3000, false, 5000);
-            drive(-0.5, -2.5, 1.7, -6.1, 1000, true, 5000);
-            drive(0.6, 3.1, -1.2, 6.6, 3000, false, 5000);
+            drive(-1.5, -1.4, -1.4, -1.9, 0, false, 3000);
+            drive(-0.5, -2.5, 1.7, -6.1, 0, true, 3000);
+            drive(0.6, 3.1, -1.2, 6.6, 0, false, 3000);
+
         }
     }
 
@@ -85,45 +86,52 @@ public class tickBasedRed extends LinearOpMode {
         fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        vert.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        fl.setTargetPosition((int) (tpr * flpos));
-        fr.setTargetPosition((int) (tpr * frpos));
-        bl.setTargetPosition((int) (tpr * blpos));
-        br.setTargetPosition((int) (tpr * brpos));
-        vert.setTargetPosition(slidePos);
-        vert2.setTargetPosition(slidePos);
-
-        fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        
-
-        while (opModeIsActive() && Math.abs(fl.getCurrentPosition() - fl.getTargetPosition()) / tpr > 0.05 && Math.abs(fl.getCurrentPosition() - br.getTargetPosition()) / tpr > 0.05 && Math.abs(vert.getCurrentPosition() - 00) / tpr > 0.05)
+        while (opModeIsActive() && time.milliseconds() < t)
         {
-            if (clawOpen == false) claw.setPosition(1);
-            else claw.setPosition(0);
+            fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            vert.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            vert2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            fl.setTargetPosition((int) (tpr * flpos));
+            fr.setTargetPosition((int) (tpr * frpos));
+            bl.setTargetPosition((int) (tpr * blpos));
+            br.setTargetPosition((int) (tpr * brpos));
+            vert.setTargetPosition(slidePos);
+            vert2.setTargetPosition(slidePos);
+
             fl.setPower(0.75);
             fr.setPower(0.75);
             bl.setPower(0.75);
             br.setPower(0.75);
             vert.setPower(0.5);
             vert2.setPower(0.5);
-            tel.addData("par", fl.getCurrentPosition());
-            tel.addData("per", br.getCurrentPosition());
-            tel.addData("slide", vert.getCurrentPosition());
-            tel.addData("slide2", vert2.getCurrentPosition());
+            tel.addData("time", time.time());
+            tel.addData("flpos", fl.getCurrentPosition() / tpr);
+            tel.addData("blpos", bl.getCurrentPosition() / tpr);
+            tel.addData("frpos", fr.getCurrentPosition() / tpr);
+            tel.addData("brpos", br.getCurrentPosition() / tpr);
+            tel.addData("claw", claw.getPosition());
+            tel.addData("slide pos", vert.getCurrentPosition());
+            tel.addData("slide2 pos", vert2.getCurrentPosition());
+            tel.addData("slides target pos", vert.getTargetPosition());
             tel.update();
         }
+
+        if (!clawOpen) {
+            claw.setPosition(1);
+        } else {
+            claw.setPosition(0);
+        }
+
         fl.setPower(0);
         fr.setPower(0);
         bl.setPower(0);
         br.setPower(0);
-        vert.setPower(0);
-        vert2.setPower(0);
+        vert.setPower(0.1);
+        vert2.setPower(0.1);
         time.reset();
-
     }
 }
