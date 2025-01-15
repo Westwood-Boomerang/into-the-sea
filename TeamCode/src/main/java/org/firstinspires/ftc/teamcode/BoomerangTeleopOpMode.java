@@ -38,6 +38,13 @@ enum CurrentState {
 public class BoomerangTeleopOpMode extends OpMode {
     public static int slidesTop = 2800;
     public static double slidesPower = 0.75;
+    public static double wrist1In = 0;
+    public static double wrist1Out = 0.75;
+    public static double wrist2In = 1;
+    public static double wrist2Out = 0.15;
+    public static double extendoIn = 0;
+    public static double extendoOut = 0.7;
+    public static double extendoMid = 0.6;
 
     DriveTrain driveTrain;
     DcMotorEx vert;
@@ -55,6 +62,7 @@ public class BoomerangTeleopOpMode extends OpMode {
     Servo wrist3;
     Telemetry t;
     ElapsedTime time;
+    ElapsedTime debounce;
 
     boolean bucketOut = false;
     boolean extClawOpen = false;
@@ -65,6 +73,7 @@ public class BoomerangTeleopOpMode extends OpMode {
     public void init() {
         t = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         time = new ElapsedTime();
+        debounce = new ElapsedTime();
         //init drivetrain
         try {
             driveTrain = new DriveTrain(hardwareMap,
@@ -133,7 +142,7 @@ public class BoomerangTeleopOpMode extends OpMode {
        }
         try {
             //extendo1 = hardwareMap.get(Servo.class, "extendo1");
-            //wrist1 = hardwareMap.get(Servo.class, "wrist1");
+            wrist1 = hardwareMap.get(Servo.class, "wrist1");
             wrist2 = hardwareMap.get(Servo.class, "wrist2");
             wrist3 = hardwareMap.get(Servo.class, "wrist3");
         } catch (Exception err){
@@ -154,60 +163,58 @@ public class BoomerangTeleopOpMode extends OpMode {
 
         driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
 
-        if (gamepad2.a) {
+        if (gamepad2.a && debounce.milliseconds() > 500) {
             specClawOpen = !specClawOpen;
-            specClaw.setPosition(specClawOpen ? 0 : 1);
-            try {
-                sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            debounce.reset();
         }
 
-        if (gamepad2.y) {
+        if (gamepad2.y&& debounce.milliseconds() > 500) {
             extClawOpen = !extClawOpen;
-            extClaw.setPosition(extClawOpen ? 0 : 1);
-            try {
-                sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            debounce.reset();
         }
+
+        if (gamepad2.b && debounce.milliseconds() > 500) {
+            bucketOut = !bucketOut;
+            debounce.reset();
+        }
+
+        specClaw.setPosition(specClawOpen ? 0 : 1);
+        extClaw.setPosition(extClawOpen ? 0 : 1);
+        bucket1.setPosition(bucketOut ? 0.0 : 0.8);
+        bucket2.setPosition(bucketOut ? 0.5 : 0.0);
 
         if (state == CurrentState.Base) {
-            extendo2.setPosition(-1);
+            extendo2.setPosition(0);
             if (gamepad1.right_bumper) {
-                extendo2.setPosition(1);
+
                 time.reset();
                 state = CurrentState.ExtendoExtending;
             } else if (gamepad2.left_bumper) {
                 // move up
-                vert.setPower(slidesPower);
-                vert2.setPower(slidesPower);
-                vert.setTargetPosition(slidesTop);
-                vert2.setTargetPosition(slidesTop);
                 state = CurrentState.SlidesMoveUp;
             }
         } else if (state == CurrentState.ExtendoExtending) {
-            if (time.milliseconds() >= 1500) {
-                // TODO: tune these
-                //wrist1.setPosition(1);
-                wrist2.setPosition(0);
-                //wrist3.setPosition(1);
+            extendo2.setPosition(extendoOut);
+            if (time.milliseconds() >= 750) {
                 time.reset();
                 state = CurrentState.AlignClawGoldilocks;
             }
         } else if (state == CurrentState.ExtendoRetracting) {
+            extendo2.setPosition(extendoIn);
             if (time.milliseconds() >= 1500) {
                 state = CurrentState.Base;
             }
         } else if (state == CurrentState.AlignClawGoldilocks) {
+            wrist2.setPosition(wrist2Out);
+            wrist1.setPosition(wrist1Out);
             if (time.milliseconds() >= 500) {
                 state = CurrentState.ExtendoOut;
             }
         } else if (state == CurrentState.AlignClawBase) {
+            wrist2.setPosition(wrist2In);
+            wrist1.setPosition(wrist1In);
             if (time.milliseconds() > 500) {
-                extendo2.setPosition(-1);
+
                 time.reset();
                 state = CurrentState.ExtendoRetracting;
             }
@@ -221,11 +228,21 @@ public class BoomerangTeleopOpMode extends OpMode {
                 state = CurrentState.AlignClawBase;
             }
         } else if (state == CurrentState.SlidesMoveUp) {
+            extendo2.setPosition(extendoMid);
+            vert.setPower(slidesPower);
+            vert2.setPower(slidesPower);
+            vert.setTargetPosition(slidesTop);
+            vert2.setTargetPosition(slidesTop);
             if (Math.abs(vert.getCurrentPosition() - vert.getTargetPosition()) < 10) {
                 // transition
                 state = CurrentState.SlidesTop;
             }
         } else if (state == CurrentState.SlidesMoveDown) {
+            extendo2.setPosition(extendoMid);
+            vert.setPower(0.5);
+            vert2.setPower(0.5);
+            vert.setTargetPosition(0);
+            vert2.setTargetPosition(0);
             if (Math.abs(vert.getCurrentPosition() - vert.getTargetPosition()) < 10) {
                 // transition
                 state = CurrentState.Base;
@@ -234,27 +251,12 @@ public class BoomerangTeleopOpMode extends OpMode {
             }
         } else if (state == CurrentState.SlidesTop) {
             if (gamepad2.left_bumper) {
-                vert.setPower(0.5);
-                vert2.setPower(0.5);
-                vert.setTargetPosition(0);
-                vert2.setTargetPosition(0);
+
                 state = CurrentState.SlidesMoveDown;
 
                 if (bucketOut) {
-                    // move back in
-                    bucket1.setPosition(0);
-                    bucket2.setPosition(0);
+
                     bucketOut = false;
-                }
-            } else if (gamepad2.b) {
-                if (bucketOut) {
-                    bucket1.setPosition(0);
-                    bucket2.setPosition(0);
-                    bucketOut = false;
-                } else {
-                    bucket1.setPosition(1);
-                    bucket2.setPosition(1);
-                    bucketOut = true;
                 }
             }
         }
