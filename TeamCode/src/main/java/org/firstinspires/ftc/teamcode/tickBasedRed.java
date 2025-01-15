@@ -33,7 +33,7 @@ public class tickBasedRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         tel = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         time = new ElapsedTime();
-        runtime = new ElapsedTime();
+        time = new ElapsedTime();
         // horizontal encoder
         //parEnc = hardwareMap.get(Encoder.class, "frontLeft");
         fl = hardwareMap.get(DcMotorEx.class, "frontLeft");
@@ -85,7 +85,7 @@ public class tickBasedRed extends LinearOpMode {
         fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        vert.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         fl.setTargetPosition((int) (tpr * flpos));
         fr.setTargetPosition((int) (tpr * frpos));
@@ -101,7 +101,7 @@ public class tickBasedRed extends LinearOpMode {
 
         
 
-        while (opModeIsActive() && time.get&& Math.abs(fl.getCurrentPosition() - fl.getTargetPosition()) / tpr > 0.05 && Math.abs(fl.getCurrentPosition() - br.getTargetPosition()) / tpr > 0.05 && Math.abs(vert.getCurrentPosition() - arm.getTargetPosition()) / tpr > 0.05)
+        while (opModeIsActive() && Math.abs(fl.getCurrentPosition() - fl.getTargetPosition()) / tpr > 0.05 && Math.abs(fl.getCurrentPosition() - br.getTargetPosition()) / tpr > 0.05 && Math.abs(vert.getCurrentPosition() - 00) / tpr > 0.05)
         {
             if (clawOpen == false) claw.setPosition(1);
             else claw.setPosition(0);
