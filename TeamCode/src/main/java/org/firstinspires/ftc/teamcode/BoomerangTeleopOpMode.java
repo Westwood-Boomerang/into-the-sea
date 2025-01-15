@@ -39,9 +39,9 @@ public class BoomerangTeleopOpMode extends OpMode {
     public static int slidesTop = 2800;
     public static double slidesPower = 0.75;
     public static double wrist1In = 0;
-    public static double wrist1Out = 0.75;
+    public static double wrist1Out = 0.7;
     public static double wrist2In = 1;
-    public static double wrist2Out = 0.15;
+    public static double wrist2Out = 0.3;
     public static double extendoIn = 0;
     public static double extendoOut = 0.7;
     public static double extendoMid = 0.6;
@@ -156,6 +156,7 @@ public class BoomerangTeleopOpMode extends OpMode {
         }
         t.update();
 
+        extendo2.setPosition(0);
     }
 
     @Override
@@ -171,47 +172,47 @@ public class BoomerangTeleopOpMode extends OpMode {
 
         if (gamepad2.a && debounce.milliseconds() > 500) {
             specClawOpen = !specClawOpen;
+            specClaw.setPosition(specClawOpen ? 0 : 1);
             debounce.reset();
         }
 
         if (gamepad2.y&& debounce.milliseconds() > 500) {
             extClawOpen = !extClawOpen;
+            extClaw.setPosition(extClawOpen ? 0 : 1);
             debounce.reset();
         }
 
         if (gamepad2.b && debounce.milliseconds() > 500) {
             bucketOut = !bucketOut;
+            bucket1.setPosition(bucketOut ? bucket1Out : bucket1In);
+            bucket2.setPosition(bucketOut ? bucket2Out : bucket2In);
             debounce.reset();
         }
 
-        specClaw.setPosition(specClawOpen ? 0 : 1);
-        extClaw.setPosition(extClawOpen ? 0 : 1);
-        bucket1.setPosition(bucketOut ? bucket1Out : bucket1In);
-        bucket2.setPosition(bucketOut ? bucket2Out : bucket2In);
-
         switch (state) {
             case Base:
-                extendo2.setPosition(0);
                 wrist2.setPosition(wrist2In);
                 wrist1.setPosition(wrist1In);
                 if (gamepad1.right_bumper) {
 
                     time.reset();
+                    extendo2.setPosition(extendoOut);
                     state = CurrentState.ExtendoExtending;
                 } else if (gamepad2.left_bumper) {
                     // move up
+                    extendo2.setPosition(extendoMid);
                     state = CurrentState.SlidesMoveUp;
                 }
                 break;
             case ExtendoExtending:
-                extendo2.setPosition(extendoOut);
                 if (time.milliseconds() >= 500) {
                     time.reset();
+                    wrist2.setPosition(wrist2Out);
+                    wrist1.setPosition(wrist1Out);
                     state = CurrentState.AlignClawGoldilocks;
                 }
                 break;
             case ExtendoRetracting:
-                extendo2.setPosition(extendoIn);
                 if (time.milliseconds() >= 1500) {
                     // AUTOMATIC: open claw
                     extClawOpen = true;
@@ -219,8 +220,6 @@ public class BoomerangTeleopOpMode extends OpMode {
                 }
                 break;
             case AlignClawGoldilocks:
-                wrist2.setPosition(wrist2Out);
-                wrist1.setPosition(wrist1Out);
                 if (time.milliseconds() >= 500) {
                     state = CurrentState.ExtendoOut;
                     currentWristOffset = 0;
@@ -231,6 +230,7 @@ public class BoomerangTeleopOpMode extends OpMode {
                 wrist1.setPosition(wrist1In);
                 if (time.milliseconds() > 500) {
                     time.reset();
+                    extendo2.setPosition(extendoIn);
                     state = CurrentState.ExtendoRetracting;
                 }
                 break;
@@ -239,13 +239,12 @@ public class BoomerangTeleopOpMode extends OpMode {
                     time.reset();
                     state = CurrentState.AlignClawBase;
                 }
-                currentWristOffset = 0.2 * gamepad2.right_trigger;
+                currentWristOffset = 0.3 * gamepad2.right_trigger;
 
                 wrist1.setPosition(wrist1Out + currentWristOffset);
                 wrist2.setPosition(wrist2Out - currentWristOffset);
                 break;
             case SlidesMoveUp:
-                extendo2.setPosition(extendoMid);
                 vert.setPower(slidesPower);
                 vert2.setPower(slidesPower);
                 vert.setTargetPosition(slidesTop);
