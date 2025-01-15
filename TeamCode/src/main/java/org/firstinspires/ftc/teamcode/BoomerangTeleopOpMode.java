@@ -132,19 +132,12 @@ public class BoomerangTeleopOpMode extends OpMode {
             t.addLine("Failed in instantiate the claw. Error Message: " + err.getMessage());
         }
 
-        try {
-            rotater = hardwareMap.get(Servo.class, "rotater");
-            axonrotater = hardwareMap.get(Servo.class, "axonrotater"); //Jihoon wasn't here so pray this works otherwise we cooked frfr
-        } catch (Exception err){
-            t.addLine("Failed to instantiate the rotaters. Error message: " + err.getMessage());
-        }
-
        try {
            //extendo1 = hardwareMap.get(Servo.class, "extendoLeft");
            extendo2 = hardwareMap.get(Servo.class, "extendoRight");
 
        } catch (Exception err){
-           t.addLine("Failed to instantiate the extendos. Error message: " + err.getMessage());
+           t.addLine("Failed to instantiate extendo. Error message: " + err.getMessage());
        }
         try {
             //extendo1 = hardwareMap.get(Servo.class, "extendo1");
