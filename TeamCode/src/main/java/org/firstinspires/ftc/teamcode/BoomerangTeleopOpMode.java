@@ -213,7 +213,8 @@ public class BoomerangTeleopOpMode extends OpMode {
             case ExtendoRetracting:
                 extendo2.setPosition(extendoIn);
                 if (time.milliseconds() >= 1500) {
-                    extClaw.setPosition(0);
+                    // AUTOMATIC: open claw
+                    extClawOpen = true;
                     state = CurrentState.Base;
                 }
                 break;
