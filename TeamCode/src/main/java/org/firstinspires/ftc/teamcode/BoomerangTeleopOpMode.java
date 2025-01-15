@@ -68,6 +68,8 @@ public class BoomerangTeleopOpMode extends OpMode {
     boolean extClawOpen = false;
     boolean specClawOpen = false;
 
+    double currentWristOffset = 0;
+
     CurrentState state = CurrentState.Base;
     @Override
     public void init() {
@@ -185,6 +187,8 @@ public class BoomerangTeleopOpMode extends OpMode {
 
         if (state == CurrentState.Base) {
             extendo2.setPosition(0);
+            wrist2.setPosition(wrist2In);
+            wrist1.setPosition(wrist1In);
             if (gamepad1.right_bumper) {
 
                 time.reset();
@@ -195,13 +199,14 @@ public class BoomerangTeleopOpMode extends OpMode {
             }
         } else if (state == CurrentState.ExtendoExtending) {
             extendo2.setPosition(extendoOut);
-            if (time.milliseconds() >= 750) {
+            if (time.milliseconds() >= 500) {
                 time.reset();
                 state = CurrentState.AlignClawGoldilocks;
             }
         } else if (state == CurrentState.ExtendoRetracting) {
             extendo2.setPosition(extendoIn);
             if (time.milliseconds() >= 1500) {
+                extClaw.setPosition(0);
                 state = CurrentState.Base;
             }
         } else if (state == CurrentState.AlignClawGoldilocks) {
@@ -209,24 +214,24 @@ public class BoomerangTeleopOpMode extends OpMode {
             wrist1.setPosition(wrist1Out);
             if (time.milliseconds() >= 500) {
                 state = CurrentState.ExtendoOut;
+                currentWristOffset = 0;
             }
         } else if (state == CurrentState.AlignClawBase) {
             wrist2.setPosition(wrist2In);
             wrist1.setPosition(wrist1In);
             if (time.milliseconds() > 500) {
-
                 time.reset();
                 state = CurrentState.ExtendoRetracting;
             }
         } else if (state == CurrentState.ExtendoOut) {
             if (gamepad1.left_bumper) {
-                // TODO: tune these
-                //wrist1.setPosition(0);
-                wrist2.setPosition(0.5);
-                //wrist3.setPosition(0);
                 time.reset();
                 state = CurrentState.AlignClawBase;
             }
+            currentWristOffset = 0.2 * gamepad2.right_trigger;
+
+            wrist1.setPosition(wrist1Out + currentWristOffset);
+            wrist2.setPosition(wrist2Out - currentWristOffset);
         } else if (state == CurrentState.SlidesMoveUp) {
             extendo2.setPosition(extendoMid);
             vert.setPower(slidesPower);
@@ -239,8 +244,8 @@ public class BoomerangTeleopOpMode extends OpMode {
             }
         } else if (state == CurrentState.SlidesMoveDown) {
             extendo2.setPosition(extendoMid);
-            vert.setPower(0.5);
-            vert2.setPower(0.5);
+            vert.setPower(0.7);
+            vert2.setPower(0.7);
             vert.setTargetPosition(0);
             vert2.setTargetPosition(0);
             if (Math.abs(vert.getCurrentPosition() - vert.getTargetPosition()) < 10) {
