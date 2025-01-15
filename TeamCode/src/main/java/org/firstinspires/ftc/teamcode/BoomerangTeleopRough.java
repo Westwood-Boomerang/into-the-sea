@@ -9,6 +9,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -29,6 +30,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 @TeleOp(name = "BoomerangTeleopRobotCentric")
+@Disabled
 public class BoomerangTeleopRough extends LinearOpMode {
     public static int maxSlidesPos = 4000;
     public static int slideWallPos = 400;

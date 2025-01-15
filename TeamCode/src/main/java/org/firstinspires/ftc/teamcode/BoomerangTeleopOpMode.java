@@ -34,7 +34,7 @@ enum CurrentState {
     TransferAlignEnd
 }
 
-@TeleOp(name = "BoomerangTeleopOpMode")
+@TeleOp(name = "BoomerangTeleop")
 public class BoomerangTeleopOpMode extends OpMode {
     public static int slidesTop = 2800;
     public static double slidesPower = 0.75;
