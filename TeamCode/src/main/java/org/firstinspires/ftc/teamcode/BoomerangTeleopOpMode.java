@@ -50,7 +50,7 @@ public class BoomerangTeleopOpMode extends OpMode {
     public static double bucket1Out = 0.0;
     public static double bucket2In = 0.0;
     public static double bucket2Out = 0.5;
-    public static int slideMultiplier = 5;
+    public static int slideMultiplier = 30;
 
     DriveTrain driveTrain;
     DcMotorEx vert;
@@ -168,7 +168,7 @@ public class BoomerangTeleopOpMode extends OpMode {
 
         if (gamepad1.b && debounce.milliseconds() > 500) {
             specClawOpen = !specClawOpen;
-            specClaw.setPosition(specClawOpen ? 0.3 : 0.7);
+            specClaw.setPosition(specClawOpen ? 0.45 : 0.55);
             debounce.reset();
         }
 
