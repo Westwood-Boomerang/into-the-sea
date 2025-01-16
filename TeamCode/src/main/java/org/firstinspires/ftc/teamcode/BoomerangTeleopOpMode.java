@@ -27,6 +27,7 @@ enum CurrentState {
     ExtendoRetracting,
     ExtendoOut,
     SlidesMove,
+    SlidesTop,
     TransferAlignStart,
     TransferDrop,
     TransferAlignEnd
@@ -204,6 +205,7 @@ public class BoomerangTeleopOpMode extends OpMode {
                 if (time.milliseconds() >= 1500) {
                     // AUTOMATIC: open claw
                     extClawOpen = true;
+                    extClaw.setPosition(1);
                     state = CurrentState.Base;
                 }
                 break;
@@ -233,41 +235,46 @@ public class BoomerangTeleopOpMode extends OpMode {
                 wrist2.setPosition(wrist2Out - currentWristOffset);
                 break;
             case SlidesMove:
-                if (gamepad1.right_trigger > 0.3) {
-                    if (vert.getCurrentPosition() > 2700) {
-                        vert.setVelocity(0);
-                        vert2.setVelocity(0);
+                vert.setPower(0.5);
+                vert2.setPower(0.5);
+                if (vert.getCurrentPosition() > 2700) {
+                    vert.setVelocity(0);
+                    vert2.setVelocity(0);
 
-                        if (!bucketOut) {
-                            bucketOut = true;
-                            bucket1.setPosition(bucket1Out);
-                            bucket2.setPosition(bucket2Out);
-                        }
-                    } else {
-                        vert.setVelocity(gamepad1.right_trigger);
-                        vert2.setVelocity(gamepad1.right_trigger);
+                    if (!bucketOut) {
+                        bucketOut = true;
+                        bucket1.setPosition(bucket1Out);
+                        bucket2.setPosition(bucket2Out);
                     }
-                } else if (gamepad1.left_trigger > 0.3) {
+                    state = CurrentState.SlidesTop;
+                } else if (gamepad1.right_trigger > 0.3 && vert.getCurrentPosition() < 2700) {
+                    vert.setVelocity(gamepad1.right_trigger);
+                    vert2.setVelocity(gamepad1.right_trigger);
+                }
+                else if (vert.getCurrentPosition() < 10) {
                     if (bucketOut) {
                         bucketOut = false;
                         bucket1.setPosition(bucket1In);
                         bucket2.setPosition(bucket2In);
                     }
 
-                    if (vert.getCurrentPosition() <= 10) {
-                        vert.setVelocity(0);
-                        vert2.setVelocity(0);
-                        state = CurrentState.Base;
-                        extendo2.setPosition(extendoIn);
-                    } else {
-                        vert.setVelocity(-gamepad1.right_trigger);
-                        vert2.setVelocity(-gamepad1.right_trigger);
-                    }
+                    vert.setVelocity(0);
+                    vert2.setVelocity(0);
+                    state = CurrentState.Base;
+                    extendo2.setPosition(extendoIn);
+                } else if (gamepad1.left_trigger > 0.3 && vert.getCurrentPosition() > 10) {
+                    vert.setVelocity(-gamepad1.left_trigger);
+                    vert2.setVelocity(-gamepad1.left_trigger);
 
                     if (vert.getCurrentPosition() < 50) {
                         bucket1.setPosition(bucket1In);
                         bucket2.setPosition(bucket2In);
                     }
+                }
+                break;
+            case SlidesTop:
+                if (gamepad1.left_trigger > 0.3) {
+                    state = CurrentState.SlidesMove;
                 }
                 break;
         }
