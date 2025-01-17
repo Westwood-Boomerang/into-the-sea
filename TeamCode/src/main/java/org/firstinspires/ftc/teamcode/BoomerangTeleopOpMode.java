@@ -38,8 +38,8 @@ enum CurrentState {
 @Config
 public class BoomerangTeleopOpMode extends OpMode {
     public static int slidesTop = 2800;
-    public static double slidesPower = 0.5;
-    public static int slideMultiplier = 30;
+    public static double slidesPower = 0.7;
+    public static int slideMultiplier = 500;
 
     DriveTrain driveTrain;
     DcMotorEx vert;
@@ -215,7 +215,7 @@ public class BoomerangTeleopOpMode extends OpMode {
                 wrist1.setPosition(0);
                 if (time.milliseconds() > 500) {
                     time.reset();
-                    extendo.setPosition(0.6);
+                    extendo.setPosition(0);
                     state = CurrentState.ExtendoRetracting;
                 }
                 break;
