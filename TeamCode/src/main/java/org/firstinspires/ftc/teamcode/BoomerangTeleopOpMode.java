@@ -162,7 +162,7 @@ public class BoomerangTeleopOpMode extends OpMode {
         t.addData("targetVert2", vert2.getTargetPosition());
         t.update();
 
-        driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
+        driveTrain.update(-gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
 
         if (gamepad1.b && debounce.milliseconds() > 500) {
             specClawOpen = !specClawOpen;

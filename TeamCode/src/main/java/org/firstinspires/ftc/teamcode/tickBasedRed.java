@@ -17,9 +17,17 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 @Config
-@Autonomous(preselectTeleOp = "BoomerangTeleopFieldCentric")
+@Autonomous(preselectTeleOp = "BoomerangTeleopOpMode")
 public class tickBasedRed extends LinearOpMode {
     final double tpr = ((((1+((double)46/17))) * (1+((double)46/11))) * 28);
+//    public static double flpos = -0.4371;
+//    public static double frpos = -2.7711;
+//    public static double blpos = 2.9562;
+//    public static double brpos = -6.2285;
+//    public static double flpos = -1.4371;
+//    public static double frpos = -4.7711;
+//    public static double blpos = -4.9562;
+//    public static double brpos = -1.2285;
     DcMotorEx fl;
     DcMotorEx fr;
     DcMotorEx bl;
@@ -72,16 +80,36 @@ public class tickBasedRed extends LinearOpMode {
         vert2.setPower(0.5);
         if (isStopRequested()) return;
         if (opModeIsActive()) {
-            drive(-1.5, -1.4, -1.4, -1.9, 0, false, 3000);
-            drive(-0.5, -2.5, 1.7, -6.1, 0, true, 3000);
-            drive(0.6, 3.1, -1.2, 6.6, 0, false, 3000);
-
+            int openPos = 0;
+            int closePos = 1;
+            hardwareMap.get(Servo.class, "extendoRight").setPosition(0);
+            claw.setPosition(closePos);
+            //slides up
+            drive(0, 0, 0, 0, 1700, false, 1000);
+            //go back for spec 1
+            drive(-1.5, -1.7, -1.3, -1.7, 1700, false, 3000);
+            //slides go down to clip spec 1
+            drive(0, 0, 0, 0, 1300, true, 3000);
+            //go right to get spec
+            drive(-3, 3, 3, -3, 300, true, 3000);
+            //spin 180 degrees
+            drive(2.5, -2.5, 2.5, -2.5, 300, false, 3000);
+            //go to back wall to pick up spec
+            claw.setPosition(openPos);
+            drive(-0.75, -0.75, -0.75, -0.75, 300, false, 3000);
+            //strafe left
+            drive(-3, 3, 3, -3, 1700, true, 3000);
+            //go backwards toward hang
+            drive(0.75, 0.75, 0.75, 0.75, 1700, false, 3000);
+            //turn 180 to have vert claw face the submersible
+            drive(-2.3, 2.3, -2.3, 2.3, 1700, false, 3000);
+            //slides go down to place
+            drive(0, 0, 0, 0, 1300, true, 3000);
         }
     }
 
     public void drive(double flpos, double frpos, double blpos, double brpos, int slidePos, boolean clawOpen,  double t) {
         time.reset();
-
         fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -106,8 +134,8 @@ public class tickBasedRed extends LinearOpMode {
             fr.setPower(0.75);
             bl.setPower(0.75);
             br.setPower(0.75);
-            vert.setPower(0.5);
-            vert2.setPower(0.5);
+            vert.setPower(0.85);
+            vert2.setPower(0.85);
             tel.addData("time", time.time());
             tel.addData("flpos", fl.getCurrentPosition() / tpr);
             tel.addData("blpos", bl.getCurrentPosition() / tpr);
@@ -120,10 +148,10 @@ public class tickBasedRed extends LinearOpMode {
             tel.update();
         }
 
-        if (!clawOpen) {
-            claw.setPosition(1);
-        } else {
+        if (clawOpen) {
             claw.setPosition(0);
+        } else {
+            claw.setPosition(1);
         }
 
         fl.setPower(0);
