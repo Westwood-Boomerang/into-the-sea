@@ -24,10 +24,10 @@ public class tickBasedRed extends LinearOpMode {
 //    public static double frpos = -2.7711;
 //    public static double blpos = 2.9562;
 //    public static double brpos = -6.2285;
-//    public static double flpos = -1.4371;
-//    public static double frpos = -4.7711;
-//    public static double blpos = -4.9562;
-//    public static double brpos = -1.2285;
+    public static double flpos = -1.5;
+    public static double frpos = -1.5;
+    public static double blpos = -1.5;
+    public static double brpos = -1.5;
     DcMotorEx fl;
     DcMotorEx fr;
     DcMotorEx bl;
@@ -87,24 +87,27 @@ public class tickBasedRed extends LinearOpMode {
             //slides up
             drive(0, 0, 0, 0, 1700, false, 1000);
             //go back for spec 1
-            drive(-1.5, -1.7, -1.3, -1.7, 1700, false, 3000);
+//            drive(-1.5, -1.5, -1.5, -1.5, 1700, false, 2000);
+            drive(flpos, frpos, blpos, brpos, 1700, true, 3000);
             //slides go down to clip spec 1
             drive(0, 0, 0, 0, 1300, true, 3000);
             //go right to get spec
             drive(-3, 3, 3, -3, 300, true, 3000);
             //spin 180 degrees
+            claw.setPosition(openPos);
             drive(2.5, -2.5, 2.5, -2.5, 300, false, 3000);
             //go to back wall to pick up spec
-            claw.setPosition(openPos);
-            drive(-0.75, -0.75, -0.75, -0.75, 300, false, 3000);
+            claw.setPosition(closePos);
+            drive(-1.05, -1.05, -1.05, -1.05, 300, false, 3000);
             //strafe left
-            drive(-3, 3, 3, -3, 1700, true, 3000);
+            drive(-2.0, 2.0, 2.0, -2.0, 1700, false, 3000);
             //go backwards toward hang
             drive(0.75, 0.75, 0.75, 0.75, 1700, false, 3000);
             //turn 180 to have vert claw face the submersible
             drive(-2.3, 2.3, -2.3, 2.3, 1700, false, 3000);
             //slides go down to place
             drive(0, 0, 0, 0, 1300, true, 3000);
+            drive(0, 0, 0, 0, 0, true, 100);
         }
     }
 
