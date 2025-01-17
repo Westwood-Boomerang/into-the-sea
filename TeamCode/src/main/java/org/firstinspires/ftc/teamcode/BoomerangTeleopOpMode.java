@@ -39,7 +39,18 @@ enum CurrentState {
 public class BoomerangTeleopOpMode extends OpMode {
     public static int slidesTop = 2800;
     public static double slidesPower = 0.7;
-    public static int slideMultiplier = 500;
+    public static double wrist1In = 0;
+    public static double wrist1Out = 0.7;
+    public static double wrist2In = 1;
+    public static double wrist2Out = 0.3;
+    public static double extendoIn = 0.6;
+    public static double extendoOut = 0.7;
+    public static double extendoMid = 0.6;
+    public static double bucket1In = 0.8;
+    public static double bucket1Out = 0.0;
+    public static double bucket2In = 0.0;
+    public static double bucket2Out = 0.5;
+    public static int slideMultiplier = 5000;
 
     DriveTrain driveTrain;
     DcMotorEx vert;
@@ -47,7 +58,10 @@ public class BoomerangTeleopOpMode extends OpMode {
     Servo bucket1;
     Servo bucket2;
     Servo specClaw;
-    Servo extendo;
+    Servo rotater; //Send help
+    Servo axonrotater; // I need help
+    Servo extendo1;
+    Servo extendo2;
     Servo extClaw;
     Servo wrist1;
     Servo wrist2;
@@ -107,8 +121,6 @@ public class BoomerangTeleopOpMode extends OpMode {
         try {
             bucket1 = hardwareMap.get(Servo.class, "bucket1");
             bucket2 = hardwareMap.get(Servo.class, "bucket2");
-            bucket1.scaleRange(0,0.8);
-            bucket2.scaleRange(0,0.5);
             //bucket1.setDirection(Servo.Direction.REVERSE);
             //bucket2.setDirection(Servo.Direction.REVERSE);
         } catch (Exception err) {
@@ -118,21 +130,20 @@ public class BoomerangTeleopOpMode extends OpMode {
         try {
             specClaw = hardwareMap.get(Servo.class, "vertClaw");
             extClaw = hardwareMap.get(Servo.class, "extClaw");
-            extClaw.scaleRange(0.45,0.55);
             //claw.setDirection(Servo.Direction.REVERSE);
         } catch (Exception err){
             t.addLine("Failed in instantiate the claws. Error Message: " + err.getMessage());
         }
 
        try {
-           //extendo = hardwareMap.get(Servo.class, "extendoLeft");
-           extendo = hardwareMap.get(Servo.class, "extendoRight");
+           //extendo1 = hardwareMap.get(Servo.class, "extendoLeft");
+           extendo2 = hardwareMap.get(Servo.class, "extendoRight");
 
        } catch (Exception err){
            t.addLine("Failed to instantiate extendo. Error message: " + err.getMessage());
        }
         try {
-            //extendo = hardwareMap.get(Servo.class, "extendo");
+            //extendo1 = hardwareMap.get(Servo.class, "extendo1");
             wrist1 = hardwareMap.get(Servo.class, "wrist1");
             wrist2 = hardwareMap.get(Servo.class, "wrist2");
             wrist3 = hardwareMap.get(Servo.class, "wrist3");
@@ -141,7 +152,7 @@ public class BoomerangTeleopOpMode extends OpMode {
         }
         t.update();
 
-        extendo.setPosition(0);
+        extendo2.setPosition(0);
     }
 
     @Override
@@ -157,7 +168,7 @@ public class BoomerangTeleopOpMode extends OpMode {
 
         if (gamepad1.b && debounce.milliseconds() > 500) {
             specClawOpen = !specClawOpen;
-            specClaw.setPosition(specClawOpen ? 0 : 1);
+            specClaw.setPosition(specClawOpen ? 0.45 : 0.55);
             debounce.reset();
         }
 
@@ -169,30 +180,30 @@ public class BoomerangTeleopOpMode extends OpMode {
 
         if (gamepad2.y && debounce.milliseconds() > 500) {
             bucketOut = !bucketOut;
-            bucket1.setPosition(bucketOut ? 0 : 1);
-            bucket2.setPosition(bucketOut ? 1 : 0);
+            bucket1.setPosition(bucketOut ? bucket1Out : bucket1In);
+            bucket2.setPosition(bucketOut ? bucket2Out : bucket2In);
             debounce.reset();
         }
 
 
         switch (state) {
             case Base:
-                wrist2.setPosition(1);
-                wrist1.setPosition(0);
+                wrist2.setPosition(wrist2In);
+                wrist1.setPosition(wrist1In);
                 if (gamepad1.right_trigger > 0.3) {
-                    extendo.setPosition(0.6);
+                    extendo2.setPosition(extendoMid);
                     state = CurrentState.SlidesMove;
                 }
                 if (gamepad1.right_bumper) {
-                    extendo.setPosition(0.7);
+                    extendo2.setPosition(extendoOut);
                     state = CurrentState.ExtendoExtending;
                 }
                 break;
             case ExtendoExtending:
                 if (time.milliseconds() >= 500) {
                     time.reset();
-                    wrist2.setPosition(0.3);
-                    wrist1.setPosition(0.7);
+                    wrist2.setPosition(wrist2Out);
+                    wrist1.setPosition(wrist1Out);
                     state = CurrentState.AlignClawGoldilocks;
                 }
                 break;
@@ -211,11 +222,11 @@ public class BoomerangTeleopOpMode extends OpMode {
                 }
                 break;
             case AlignClawBase:
-                wrist2.setPosition(1);
-                wrist1.setPosition(0);
+                wrist2.setPosition(wrist2In);
+                wrist1.setPosition(wrist1In);
                 if (time.milliseconds() > 500) {
                     time.reset();
-                    extendo.setPosition(0);
+                    extendo2.setPosition(extendoIn);
                     state = CurrentState.ExtendoRetracting;
                 }
                 break;
@@ -226,8 +237,8 @@ public class BoomerangTeleopOpMode extends OpMode {
                 }
                 currentWristOffset = 0.3 * gamepad2.right_trigger;
 
-                wrist1.setPosition(0.7 + currentWristOffset);
-                wrist2.setPosition(0.3 - currentWristOffset);
+                wrist1.setPosition(wrist1Out + currentWristOffset);
+                wrist2.setPosition(wrist2Out - currentWristOffset);
                 break;
             case SlidesMove:
                 vert.setPower(slidesPower);
@@ -240,13 +251,13 @@ public class BoomerangTeleopOpMode extends OpMode {
                     state = CurrentState.Base;
                 } else if (vert.getCurrentPosition() < slidesTop / 2 && bucketOut) {
                     bucketOut = false;
-                    bucket1.setPosition(1);
-                    bucket2.setPosition(0);
+                    bucket1.setPosition(bucket1In);
+                    bucket2.setPosition(bucket2In);
                 } else if (vert.getCurrentPosition() > slidesTop - 50) {
                     if (!bucketOut) {
                         bucketOut = true;
-                        bucket1.setPosition(0);
-                        bucket2.setPosition(1);
+                        bucket1.setPosition(bucket1Out);
+                        bucket2.setPosition(bucket2Out);
                     }
                     state = CurrentState.SlidesTop;
                 }
