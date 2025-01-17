@@ -38,19 +38,19 @@ enum CurrentState {
 @Config
 public class BoomerangTeleopOpMode extends OpMode {
     public static int slidesTop = 2800;
-    public static double slidesPower = 0.7;
+    public static double slidesPower = 0.5;
     public static double wrist1In = 0;
     public static double wrist1Out = 0.7;
     public static double wrist2In = 1;
     public static double wrist2Out = 0.3;
-    public static double extendoIn = 0.6;
+    public static double extendoIn = 0;
     public static double extendoOut = 0.7;
     public static double extendoMid = 0.6;
     public static double bucket1In = 0.8;
     public static double bucket1Out = 0.0;
     public static double bucket2In = 0.0;
-    public static double bucket2Out = 0.5;
-    public static int slideMultiplier = 5000;
+    public static double bucket2Out = 0.7;
+    public static int slideMultiplier = 1500;
 
     DriveTrain driveTrain;
     DcMotorEx vert;
@@ -164,21 +164,21 @@ public class BoomerangTeleopOpMode extends OpMode {
         t.addData("targetVert2", vert2.getTargetPosition());
         t.update();
 
-        driveTrain.update(-gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
+        driveTrain.update(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, gamepad1.start);
 
-        if (gamepad1.b && debounce.milliseconds() > 500) {
+        if (gamepad1.b && debounce.milliseconds() > 50) {
             specClawOpen = !specClawOpen;
             specClaw.setPosition(specClawOpen ? 0.45 : 0.55);
             debounce.reset();
         }
 
-        if (gamepad2.b && debounce.milliseconds() > 500) {
+        if (gamepad2.b && debounce.milliseconds() > 50) {
             extClawOpen = !extClawOpen;
             extClaw.setPosition(extClawOpen ? 0 : 1);
             debounce.reset();
         }
 
-        if (gamepad2.y && debounce.milliseconds() > 500) {
+        if (gamepad2.y && debounce.milliseconds() > 50) {
             bucketOut = !bucketOut;
             bucket1.setPosition(bucketOut ? bucket1Out : bucket1In);
             bucket2.setPosition(bucketOut ? bucket2Out : bucket2In);
@@ -188,6 +188,8 @@ public class BoomerangTeleopOpMode extends OpMode {
 
         switch (state) {
             case Base:
+                if (gamepad1.left_trigger > 0.5)
+                    extendo2.setPosition(extendoOut);
                 wrist2.setPosition(wrist2In);
                 wrist1.setPosition(wrist1In);
                 if (gamepad1.right_trigger > 0.3) {
@@ -249,10 +251,6 @@ public class BoomerangTeleopOpMode extends OpMode {
                     targetVertPos = Math.max(vert.getCurrentPosition() - slideMultiplier, 0);
                 } else if (vert.getCurrentPosition() < 10) {
                     state = CurrentState.Base;
-                } else if (vert.getCurrentPosition() < slidesTop / 2 && bucketOut) {
-                    bucketOut = false;
-                    bucket1.setPosition(bucket1In);
-                    bucket2.setPosition(bucket2In);
                 } else if (vert.getCurrentPosition() > slidesTop - 50) {
                     if (!bucketOut) {
                         bucketOut = true;
@@ -260,6 +258,12 @@ public class BoomerangTeleopOpMode extends OpMode {
                         bucket2.setPosition(bucket2Out);
                     }
                     state = CurrentState.SlidesTop;
+                }
+
+                if (vert.getCurrentPosition() < slidesTop / 2 && bucketOut) {
+                    bucketOut = false;
+                    bucket1.setPosition(bucket1In);
+                    bucket2.setPosition(bucket2In);
                 }
                 vert.setTargetPosition(targetVertPos);
                 vert2.setTargetPosition(targetVertPos);
