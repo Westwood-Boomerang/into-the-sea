@@ -88,23 +88,23 @@ public class tickBasedRed extends LinearOpMode {
             //slides go down to clip spec 1
             drive(0, 0, 0, 0, 1300, true, 1000);
             //go right to get spec
-            drive(-3.5, 3.5, 3.5, -3.5, 300, true, 3000);
+            drive(-3.5, 3.5, 3.5, -3.5, 250, true, 3000);
             //spin 180 degrees
             claw.setPosition(openPos);
-            drive(2.5, -2.5, 2.5, -2.5, 300, false, 3000);
+            drive(2.5, -2.5, 2.5, -2.5, 250, false, 3000);
             //go to back wall to pick up spec
-            drive(-0.8, -0.8, -0.8, -0.8, 300, true, 3000);
+            drive(-0.6, -0.6, -0.6, -0.6, 250, true, 3000);
             claw.setPosition(closePos);
             //strafe left
-            drive(-2.5, 2.5, 2.5, -2.5, 1700, false, 3000);
+            drive(-2.75, 2.75, 2.75, -2.75, 1700, false, 3000);
             //go backwards toward hang
             drive(0.75, 0.75, 0.75, 0.75, 1700, false, 3000);
             //turn 180 to have vert claw face the submersible
             drive(-2.4, 2.4, -2.4, 2.4, 1700, false, 3000);
             //go backwards toward submersible (again)
-            drive(-0.8, -0.8, -0.8, -0.8, 1800, false, 3000);
+            drive(-0.2, -0.2, -0.2, -0.2, 1770, false, 3000);
             //slides go down to place
-            drive(0, 0, 0, 0, 1350, true, 3000);
+            drive(0, 0, 0, 0, 1400, true, 3000);
             claw.setPosition(openPos);
             drive(0, 0, 0, 0, 0, true, 1000);
         }
