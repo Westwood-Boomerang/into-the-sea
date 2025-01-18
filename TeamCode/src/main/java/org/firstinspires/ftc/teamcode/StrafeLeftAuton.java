@@ -15,9 +15,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Config
 @Autonomous(preselectTeleOp = "BoomerangTeleop")
-public class tickBasedRed extends LinearOpMode {
+public class StrafeLeftAuton extends LinearOpMode {
     final double tpr = ((((1+((double)46/17))) * (1+((double)46/11))) * 28);
-//    public static double flpos = -0.4371;
+    //    public static double flpos = -0.4371;
 //    public static double frpos = -2.7711;
 //    public static double blpos = 2.9562;
 //    public static double brpos = -6.2285;
@@ -79,34 +79,8 @@ public class tickBasedRed extends LinearOpMode {
         if (opModeIsActive()) {
             int openPos = 0;
             int closePos = 1;
-            hardwareMap.get(Servo.class, "extendoRight").setPosition(0);
-            claw.setPosition(closePos);
-            //slides up
-            drive(0, 0, 0, 0, 1700, false, 1000);
-            //go back for spec 1
-            drive(-1.5, -1.5, -1.5, -1.5, 1700, false, 2000);
-            //slides go down to clip spec 1
-            drive(0, 0, 0, 0, 1300, true, 1000);
-            //go right to get spec
-            drive(-3.7, 3.7, 3.7, -3.7, 250, true, 3000);
-            //spin 180 degrees
-            claw.setPosition(openPos);
-            drive(2.5, -2.5, 2.5, -2.5, 250, false, 3000);
-            //go to back wall to pick up spec
-            drive(-0.4, -0.4, -0.4, -0.4, 250, true, 1000);
-            claw.setPosition(closePos);
-            //strafe left
-            drive(-2.75, 2.75, 2.75, -2.75, 1700, false, 3000);
-            //go backwards toward hang
-            drive(0.75, 0.75, 0.75, 0.75, 1700, false, 3000);
-            //turn 180 to have vert claw face the submersible
-            drive(-2.4, 2.4, -2.4, 2.4, 1700, false, 3000);
-            //go backwards toward submersible (again)
-            //drive(-0.2, -0.2, -0.2, -0.2, 1770, false, 3000);
-            //slides go down to place
-            drive(0, 0, 0, 0, 1400, true, 3000);
-            claw.setPosition(openPos);
-            drive(0, 0, 0, 0, 0, true, 1000);
+            hardwareMap.get(Servo.class, "extendoRight").setPosition(0.7);
+            drive(-3, 3, 3, -3, 0, true, 3000);
         }
     }
 

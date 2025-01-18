@@ -38,7 +38,7 @@ enum CurrentState {
 @Config
 public class BoomerangTeleopOpMode extends OpMode {
     public static int slidesTop = 2800;
-    public static double slidesPower = 0.5;
+    public static double slidesPower = 0.9;
     public static double wrist1In = 0;
     public static double wrist1Out = 0.7;
     public static double wrist2In = 1;
@@ -53,7 +53,7 @@ public class BoomerangTeleopOpMode extends OpMode {
     public static double wrist3Left = 0.3;
     public static double wrist3Right = 0.7;
     public static double wrist3Center = 0.5;
-    public static int slideMultiplier = 1500;
+    public static int slideMultiplier = 500;
 
     DriveTrain driveTrain;
     DcMotorEx vert;
@@ -80,7 +80,7 @@ public class BoomerangTeleopOpMode extends OpMode {
     double currentWristOffset = 0;
     int targetVertPos = 0;
     double currentWristRot = wrist3Center;
-    boolean robotCentric =false;
+    boolean robotCentric = true;
 
     CurrentState state = CurrentState.Base;
     @Override
@@ -158,8 +158,8 @@ public class BoomerangTeleopOpMode extends OpMode {
         }
         t.update();
 
-        extendo2.setPosition(0);
-        wrist3.setPosition(currentWristRot);
+        //extendo2.setPosition(0);
+        //wrist3.setPosition(currentWristRot);
     }
 
     @Override
@@ -173,9 +173,9 @@ public class BoomerangTeleopOpMode extends OpMode {
         t.update();
 
         if (robotCentric) {
-        driveTrain.updateRobotCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
+            driveTrain.updateRobotCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
         } else {
-            driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
+            driveTrain.update(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
         }
 
         if (gamepad1.b && debounce.seconds() > 1) {
