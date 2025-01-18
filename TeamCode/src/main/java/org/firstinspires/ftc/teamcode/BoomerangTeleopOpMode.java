@@ -80,6 +80,7 @@ public class BoomerangTeleopOpMode extends OpMode {
     double currentWristOffset = 0;
     int targetVertPos = 0;
     double currentWristRot = wrist3Center;
+    boolean robotCentric =false;
 
     CurrentState state = CurrentState.Base;
     @Override
@@ -91,7 +92,7 @@ public class BoomerangTeleopOpMode extends OpMode {
         try {
             driveTrain = new DriveTrain(hardwareMap,
                     new String[]{"frontRight", "frontLeft", "backRight", "backLeft"},
-                    org.firstinspires.ftc.teamcode.subsystems.DriveTrain.Reverse.RevRight,
+                    org.firstinspires.ftc.teamcode.subsystems.DriveTrain.Reverse.RevLeft,
                     "imu",
                     new IMU.Parameters(
                             new RevHubOrientationOnRobot(
@@ -168,13 +169,24 @@ public class BoomerangTeleopOpMode extends OpMode {
         t.addData("vert2", vert2.getCurrentPosition());
         t.addData("targetVert1", vert.getTargetPosition());
         t.addData("targetVert2", vert2.getTargetPosition());
+        t.addData("robotCentric", robotCentric);
         t.update();
 
-        driveTrain.update(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, gamepad1.start);
+        if (robotCentric) {
+        driveTrain.updateRobotCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
+        } else {
+            driveTrain.update(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.start);
+        }
 
         if (gamepad1.b && debounce.seconds() > 1) {
             specClawOpen = !specClawOpen;
             specClaw.setPosition(specClawOpen ? 0 :1);
+            debounce.reset();
+        }
+
+        if (gamepad1.share && debounce.seconds() > 1) {
+            robotCentric = !robotCentric;
+
             debounce.reset();
         }
 
